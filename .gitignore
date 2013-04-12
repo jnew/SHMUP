@@ -14,3 +14,5 @@
 
 # Compiled dependencies
 *.d
+
+*.pro
