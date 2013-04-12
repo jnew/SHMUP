@@ -15,8 +15,8 @@ void Game::Start(void)
   {
     GameLoop();
   }
-
-  mainWindow.close();
+  if(mainWindow.isOpen())
+    mainWindow.close();
 }
 
 bool Game::IsExiting()
@@ -27,10 +27,10 @@ bool Game::IsExiting()
     return false;
 }
 
-void Game::ShowSplashScreen()
+bool Game::ShowSplashScreen()
 {
     Splashscreen splash;
-    splash.Show(mainWindow);
+    return splash.Show(mainWindow);
 }
 
 void Game::CheckMovement(float playerSpeed, float frameTime)
@@ -118,7 +118,8 @@ void Game::GameLoop()
     float frameTime = frameClock.getElapsedTime().asSeconds();
     frameClock.restart();
     //check movement
-    CheckMovement(400, frameTime);
+    if (gameState != Paused)
+        CheckMovement(400, frameTime);
 
     //event loop
     sf::Event currentEvent;
@@ -130,43 +131,67 @@ void Game::GameLoop()
             {
                 gameState = ShowingSplash;
                 break;
-            }
+            };
             case Game::ShowingSplash:
             {
-                ShowSplashScreen();
+                if(!ShowSplashScreen())
+                    gameState = Exiting;
+                else
+                    gameState = Playing;
                 //after splash is done, load player and background
                 background.Load("images/Background.png");
                 player1.Load("images/player.png");
                 player1.SetPosition(30,280);
-                gameState = Playing;
                 break;
-            }
+            };
             case Game::Playing:
             {
                 if(currentEvent.type == sf::Event::Closed || (currentEvent.type == (sf::Event::KeyPressed) && (currentEvent.key.code == sf::Keyboard::Escape)))
                 {
                     gameState = Game::Exiting;
                 }
+                if(currentEvent.type == sf::Event::Closed || (currentEvent.type == (sf::Event::KeyPressed) && (currentEvent.key.code == sf::Keyboard::P)))
+                {
+                    gameState = Game::Paused;
+                }
                 break;
-            }
+            };
+            case Game::Paused:
+            {
+                if(currentEvent.type == sf::Event::Closed || (currentEvent.type == (sf::Event::KeyPressed) && (currentEvent.key.code == sf::Keyboard::P)))
+                {
+                    gameState = Game::Playing;
+                }
+                break;
+            };
         }
     }
 
-    if(!projList.empty())
+    if(!projList.empty() && gameState != Paused)
     {
       UpdateProj();
     }
 
-    char fps[4];
-    sprintf(fps,"%f",(1/frameTime));
+    char fps[16];
+    sprintf(fps,"%.2f",(1/frameTime));
     sf::Text text(fps);
     text.setCharacterSize(30);
     text.setStyle(sf::Text::Bold);
-    text.setColor(sf::Color::Red);
+    text.setColor(sf::Color::Yellow);
+    text.setPosition(5, 0);
+
+    char infoBuffer[32];
+    sprintf(infoBuffer,"ESC to Quit\nP to Pause");
+    sf::Text info(infoBuffer);
+    info.setCharacterSize(30);
+    //info.setStyle(sf::Text::Bold);
+    info.setColor(sf::Color::Yellow);
+    info.setPosition(5, 40);
 
     //draw game
     mainWindow.clear(sf::Color(0,0,0));
     mainWindow.draw(text);
+    mainWindow.draw(info);
     //background.Draw(mainWindow);
     DrawProj();
     player1.Draw(mainWindow);

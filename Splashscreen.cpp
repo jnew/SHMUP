@@ -1,35 +1,30 @@
 #include "Splashscreen.h"
 
-void Splashscreen::Show(sf::RenderWindow &window)
+bool Splashscreen::Show(sf::RenderWindow &window)
 {
     sf::Image image;
     if(image.loadFromFile("images/SplashScreen.png") != true)
     {
-        return;
+        return 0;
     }
 
-    sf::Image image2;
-    if(image2.loadFromFile("images/SplashScreen2.png") != true)
+    sf::Texture texture;
+    if(texture.loadFromImage(image) != true)
     {
-        return;
+        return 0;
     }
 
-    sf::Texture text;
-    if(text.loadFromImage(image) != true)
-    {
-        return;
-    }
-
-    sf::Texture text2;
-    if(text2.loadFromImage(image2) != true)
-    {
-        return;
-    }
-
-    sf::Sprite sprite(text);
-    sf::Sprite sprite2(text2);
+    sf::Sprite sprite(texture);
     window.draw(sprite);
     window.display();
+
+    char prompt[16];
+    sprintf(prompt,"Press Space to Begin");
+    sf::Text text(prompt);
+    text.setCharacterSize(30);
+    text.setStyle(sf::Text::Bold);
+    text.setColor(sf::Color::White);
+    text.setPosition(10, 555);
 
     sf::Event event;
     bool blinkCounter = 1;
@@ -46,13 +41,17 @@ void Splashscreen::Show(sf::RenderWindow &window)
         {
            if((event.type == (sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Space)) || event.type == sf::Event::Closed )
            {
-             return;
+             return 1;
+           }
+           if((event.type == (sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape)) || event.type == sf::Event::Closed )
+           {
+             return 0;
            }
         }
         if(((clock()-start)/(double) CLOCKS_PER_SEC) >= 0.5)
         {
             if(spriteCount % 2 == 0)
-                window.draw(sprite2);
+                window.draw(text);
             else
                 window.draw(sprite);
             window.display();

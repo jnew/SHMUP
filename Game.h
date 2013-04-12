@@ -22,7 +22,7 @@ public:
 private:
   static bool IsExiting();
   static void GameLoop();
-  static void ShowSplashScreen();
+  static bool ShowSplashScreen();
   static void CheckMovement(float, float);
   static void UpdateProj();
   static void DrawProj();
