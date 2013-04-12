@@ -7,6 +7,7 @@
 #include "Background.h"
 #include "Player.h"
 #include "Projectile.h"
+#include <stdio.h>
 #include <ctime>
 #include <iostream>
 #include <list>
@@ -22,7 +23,7 @@ private:
   static bool IsExiting();
   static void GameLoop();
   static void ShowSplashScreen();
-  static void CheckMovement(float);
+  static void CheckMovement(float, float);
   static void UpdateProj();
   static void DrawProj();
 
@@ -34,7 +35,8 @@ private:
   static Player player1;
   static Background background;
   static std::list<Projectile> projList;
-  static sf::Clock clock;
+  static sf::Clock projClock;
+  static sf::Clock frameClock;
 };
 
 

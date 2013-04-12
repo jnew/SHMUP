@@ -2,13 +2,15 @@
 
 Projectile::Projectile()
 {
-    velocity = 5;
+    this->velocity[0] = 10;
+    this->velocity[1] = 0;
 }
 
-Projectile::Projectile(float velocity, float x, float y)
+Projectile::Projectile(float velocity[2], float x, float y)
 {
     Load("images/proj.png");
-    this->velocity = velocity;
+    this->velocity[0] = velocity[0];
+    this->velocity[1] = velocity[1];
     SetPosition(x, y);
 }
 
@@ -18,7 +20,7 @@ Projectile::~Projectile()
 
 void Projectile::updatePosition()
 {
-    sprite.move(velocity, 0.f);
+    sprite.move(velocity[0], velocity[1]);
     //std::cerr << "position updated" << std::endl;
 }
 
@@ -27,7 +29,8 @@ void Projectile::setOrigin(float x, float y)
 
 }
 
-void Projectile::setVelocity(float velocity)
+void Projectile::setVelocity(float velocity[2])
 {
-    this->velocity = velocity;
+    this->velocity[0] = velocity[0];
+    this->velocity[1] = velocity[1];
 }
