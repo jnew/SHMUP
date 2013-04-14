@@ -7,7 +7,7 @@ Projectile::Projectile()
     offScreen = false;
 }
 
-Projectile::Projectile(float velocity[2], float x, float y, char* filePath, int power)
+Projectile::Projectile(float velocity[2], float x, float y, std::string filePath, int power)
 {
     Load(filePath);
     this->velocity[0] = velocity[0];

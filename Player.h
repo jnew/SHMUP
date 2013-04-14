@@ -8,6 +8,7 @@ class Player : public VisibleObject
 public:
     Player();
     ~Player();
+    bool isDestroyed;
 private:
 };
 

@@ -3,6 +3,7 @@
 
 #include "SFML/Window.hpp"
 #include "SFML/Graphics.hpp"
+#include "Game.h"
 #include <ctime>
 #include <stdio.h>
 

@@ -14,16 +14,25 @@ bool Splashscreen::Show(sf::RenderWindow &window)
         return 0;
     }
 
+    char titleText[32];
+    sprintf(titleText,"SHMUP: THE GAME");
+    sf::Text title(titleText);
+    title.setCharacterSize(40);
+    title.setStyle(sf::Text::Bold);
+    title.setColor(sf::Color::White);
+    title.setPosition(288-(title.getGlobalBounds().width/2), 300);
+
     sf::Sprite sprite(texture);
-    window.draw(sprite);
+    window.draw(Game::playArea);
+    window.draw(title);
     window.display();
 
-    char prompt[16];
+    char prompt[32];
     sprintf(prompt,"Press Enter to Begin");
     sf::Text text(prompt);
     text.setCharacterSize(24);
     text.setColor(sf::Color::White);
-    text.setPosition(10, 600);
+    text.setPosition(288-text.getGlobalBounds().width/2, 728);
 
     sf::Event event;
     bool blinkCounter = 1;
@@ -38,7 +47,7 @@ bool Splashscreen::Show(sf::RenderWindow &window)
         }
         while(window.pollEvent(event))
         {
-           if((event.type == (sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Return)) || event.type == sf::Event::Closed )
+           if((event.type == (sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Return)))
            {
              return 1;
            }
@@ -50,13 +59,13 @@ bool Splashscreen::Show(sf::RenderWindow &window)
         if(((clock()-start)/(double) CLOCKS_PER_SEC) >= 0.5)
         {
             window.clear();
+            window.draw(Game::playArea);
+            //window.draw(sprite);
+            window.draw(title);
             if(spriteCount % 2 == 0)
             {
-                window.draw(sprite);
                 window.draw(text);
             }
-            else
-                window.draw(sprite);
             window.display();
             spriteCount++;
             blinkCounter = 1;

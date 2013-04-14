@@ -7,7 +7,7 @@ class Projectile: public VisibleObject
 {
 public:
     Projectile();
-    Projectile(float[], float, float, char *filePath, int);
+    Projectile(float[], float, float, std::string, int);
     ~Projectile();
     void setVelocity(float[]);
     void updatePosition();

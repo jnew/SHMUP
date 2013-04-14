@@ -9,6 +9,7 @@
 #include "Enemy.h"
 #include "Projectile.h"
 #include <stdio.h>
+#include <string>
 #include <ctime>
 #include <iostream>
 #include <list>
@@ -19,20 +20,20 @@ class Game
 
 public:
   static void Start();
+  static sf::RectangleShape playArea;
 
 private:
-  static bool IsExiting();
   static void GameLoop();
   static bool ShowSplashScreen();
   static void CheckMovement(float, float);
   static void UpdateProj();
-  static void UpdateEnemies();
+  static void UpdateEnemies(float);
   static void DrawProj();
   static void DrawEnemies();
   static void CleanUp();
 
   enum GameState { Uninitialized, ShowingSplash, Paused,
-          ShowingMenu, Playing, Exiting };
+          ShowingMenu, Playing, GameOver, Exiting };
 
   static GameState gameState;
   static sf::RenderWindow mainWindow;
