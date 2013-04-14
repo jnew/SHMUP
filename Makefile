@@ -1,5 +1,5 @@
 objects := main.o Player.o Projectile.o VisibleObject.o Game.o Background.o Enemy.o
-libs := -lsfml-graphics -lsfml-window -lsfml-system 
+libs := -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
 
 all: Game
 

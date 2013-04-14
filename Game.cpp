@@ -16,6 +16,27 @@ void Game::Start(void)
   //mainWindow.setVerticalSyncEnabled(true);
   gameState = Uninitialized;
 
+  //load some sounds
+  sf::SoundBuffer projSound;
+  projSound.loadFromFile("sounds/se_plst00.wav");
+  sounds[0].setBuffer(projSound);
+
+  sf::SoundBuffer okSound;
+  okSound.loadFromFile("sounds/se_ok00.wav");
+  sounds[1].setBuffer(okSound);
+
+  sf::SoundBuffer pauseSound;
+  pauseSound.loadFromFile("sounds/se_select00.wav");
+  sounds[2].setBuffer(pauseSound);
+
+  sf::SoundBuffer hitSound;
+  hitSound.loadFromFile("sounds/se_damage00.wav");
+  sounds[3].setBuffer(hitSound);
+
+  sf::SoundBuffer endSound;
+  endSound.loadFromFile("sounds/se_playerdead.wav");
+  sounds[4].setBuffer(endSound);
+
   while(gameState != Exiting)
   {
     GameLoop();
@@ -93,7 +114,8 @@ bool Game::ShowSplashScreen()
            }
            if((event.type == (sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Return)))
            {
-             return 1;
+               sounds[1].play();
+                return 1;
            }
            if((event.type == (sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape)) || event.type == sf::Event::Closed )
            {
@@ -151,6 +173,8 @@ void Game::CheckMovement(float playerSpeed, float frameTime)
         std::string filePath = "images/PlayerProj.png";
         Projectile* newProj = new Projectile(velocity, player1.sprite.getPosition().x+15, player1.sprite.getPosition().y, filePath, 5);
         projList.push_front(*newProj);
+        if(sounds[0].getStatus() != sf::Sound::Playing)
+            sounds[0].play();
         std::cerr << "projectile made" << std::endl;
         projClock.restart();
     }
@@ -187,6 +211,8 @@ void Game::UpdateEnemies(float frameTime)
             if((*i).sprite.getGlobalBounds().intersects((*j).sprite.getGlobalBounds()))
             {
                 (*i).takeDamage((*j).power);
+                if(sounds[3].getStatus() != sf::Sound::Playing)
+                    sounds[3].play();
                 (*j).offScreen = true;
             }
         }
@@ -315,6 +341,7 @@ void Game::GameLoop()
             }
             if(currentEvent.type == (sf::Event::KeyPressed) && currentEvent.key.code == (sf::Keyboard::P))
             {
+                sounds[2].play();
                 gameState = Paused;
             }
             break;
@@ -323,6 +350,7 @@ void Game::GameLoop()
         {
             if(currentEvent.type == (sf::Event::KeyPressed) && currentEvent.key.code == (sf::Keyboard::P))
             {
+                sounds[2].play();
                 gameState = Playing;
             }
             break;
@@ -370,6 +398,7 @@ void Game::GameLoop()
             projList.clear();
             enemyList.clear();
             mainWindow.clear();
+            sounds[4].play();
             gameState = GameOver;
             break;
         }
@@ -428,4 +457,5 @@ sf::Clock Game::projClock;
 sf::Clock Game::frameClock;
 sf::RectangleShape Game::playArea;
 sf::View Game::View(sf::FloatRect(0, 0, 1024, 768));
+sf::Sound Game::sounds[5];
 

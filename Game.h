@@ -3,6 +3,7 @@
 
 #include "SFML/Window.hpp"
 #include "SFML/Graphics.hpp"
+#include "SFML/Audio.hpp"
 #include "Background.h"
 #include "Player.h"
 #include "Enemy.h"
@@ -43,6 +44,7 @@ private:
   static sf::Clock projClock;
   static sf::Clock frameClock;
   static sf::View View;
+  static sf::Sound sounds[5];
 };
 
 
