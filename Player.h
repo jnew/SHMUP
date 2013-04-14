@@ -9,8 +9,6 @@ public:
     Player();
     ~Player();
 private:
-    float xpos;
-    float ypos;
 };
 
 #endif // PLAYER_H

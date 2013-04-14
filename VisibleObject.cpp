@@ -19,6 +19,7 @@ void VisibleObject::Load(std::string filepath)
   else
   {
     filePath = filepath;
+    texture.setSmooth(false);
     sprite.setTexture(texture);
     isLoaded = true;
   }

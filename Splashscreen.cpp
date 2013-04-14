@@ -3,7 +3,7 @@
 bool Splashscreen::Show(sf::RenderWindow &window)
 {
     sf::Image image;
-    if(image.loadFromFile("images/SplashScreen.png") != true)
+    if(image.loadFromFile("images/Background.png") != true)
     {
         return 0;
     }
@@ -19,12 +19,11 @@ bool Splashscreen::Show(sf::RenderWindow &window)
     window.display();
 
     char prompt[16];
-    sprintf(prompt,"Press Space to Begin");
+    sprintf(prompt,"Press Enter to Begin");
     sf::Text text(prompt);
-    text.setCharacterSize(30);
-    text.setStyle(sf::Text::Bold);
+    text.setCharacterSize(24);
     text.setColor(sf::Color::White);
-    text.setPosition(10, 555);
+    text.setPosition(10, 600);
 
     sf::Event event;
     bool blinkCounter = 1;
@@ -39,7 +38,7 @@ bool Splashscreen::Show(sf::RenderWindow &window)
         }
         while(window.pollEvent(event))
         {
-           if((event.type == (sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Space)) || event.type == sf::Event::Closed )
+           if((event.type == (sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Return)) || event.type == sf::Event::Closed )
            {
              return 1;
            }
@@ -50,8 +49,12 @@ bool Splashscreen::Show(sf::RenderWindow &window)
         }
         if(((clock()-start)/(double) CLOCKS_PER_SEC) >= 0.5)
         {
+            window.clear();
             if(spriteCount % 2 == 0)
+            {
+                window.draw(sprite);
                 window.draw(text);
+            }
             else
                 window.draw(sprite);
             window.display();

@@ -2,18 +2,17 @@
 #define PROJECTILE_H
 
 #include "VisibleObject.h"
-#include <iostream>
 
 class Projectile: public VisibleObject
 {
 public:
     Projectile();
-    Projectile(float[], float, float);
+    Projectile(float[], float, float, char *filePath, int);
     ~Projectile();
-    void setOrigin(float, float);
     void setVelocity(float[]);
     void updatePosition();
     bool offScreen;
+    int power;
 private:
     float velocity[2];
 };

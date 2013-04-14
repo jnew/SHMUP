@@ -6,6 +6,7 @@
 #include "Splashscreen.h"
 #include "Background.h"
 #include "Player.h"
+#include "Enemy.h"
 #include "Projectile.h"
 #include <stdio.h>
 #include <ctime>
@@ -25,7 +26,10 @@ private:
   static bool ShowSplashScreen();
   static void CheckMovement(float, float);
   static void UpdateProj();
+  static void UpdateEnemies();
   static void DrawProj();
+  static void DrawEnemies();
+  static void CleanUp();
 
   enum GameState { Uninitialized, ShowingSplash, Paused,
           ShowingMenu, Playing, Exiting };
@@ -35,6 +39,7 @@ private:
   static Player player1;
   static Background background;
   static std::list<Projectile> projList;
+  static std::list<Enemy> enemyList;
   static sf::Clock projClock;
   static sf::Clock frameClock;
 };
