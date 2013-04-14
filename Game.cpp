@@ -73,6 +73,24 @@ bool Game::ShowSplashScreen()
         }
         while(mainWindow.pollEvent(event))
         {
+           if(event.type == sf::Event::Resized)
+           {
+                //std::cerr << "resized" << std::endl;
+                float aspectRatio = float(event.size.width)/float(event.size.height);
+                float newHeight = (1024.f*event.size.height)/event.size.width;
+                float newWidth = (768.f*event.size.width)/event.size.height;
+                if(aspectRatio > (4.f/3.f))
+                {
+                    float displace = (newWidth - 1024.f)/(-2.f);
+                    View = sf::View(sf::FloatRect(displace, 0, newWidth, 768));
+                }
+                else if(aspectRatio < (4.f/3.f))
+                {
+                    float displace = (newHeight - 768.f)/(-2.f);
+                    View = sf::View(sf::FloatRect(0, displace, 1024, newHeight));
+                }
+                mainWindow.setView(View);
+           }
            if((event.type == (sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Return)))
            {
              return 1;
@@ -264,7 +282,6 @@ void Game::GameLoop()
             float newWidth = (768.f*currentEvent.size.width)/currentEvent.size.height;
             if(aspectRatio > (4.f/3.f))
             {
-                std::cerr << aspectRatio << std::endl;
                 float displace = (newWidth - 1024.f)/(-2.f);
                 View = sf::View(sf::FloatRect(displace, 0, newWidth, 768));
             }
