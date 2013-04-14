@@ -7,6 +7,7 @@ void Game::Start(void)
     return;
 
   mainWindow.create(sf::VideoMode(1024,768,32),"SHMUP Super Alpha"); //playing field is 576 by 768
+  mainWindow.setView(View);
   mainWindow.setKeyRepeatEnabled(false);
   mainWindow.setFramerateLimit(0);
   mainWindow.setMouseCursorVisible(false);
@@ -27,8 +28,75 @@ void Game::Start(void)
 //shows splash screen (BLOCKING)
 bool Game::ShowSplashScreen()
 {
-    Splashscreen splash;
-    return splash.Show(mainWindow);
+    sf::Image image;
+    if(image.loadFromFile("images/Background.png") != true)
+    {
+        return 0;
+    }
+
+    sf::Texture texture;
+    if(texture.loadFromImage(image) != true)
+    {
+        return 0;
+    }
+
+    char titleText[32];
+    sprintf(titleText,"SHMUP: THE GAME");
+    sf::Text title(titleText);
+    title.setCharacterSize(40);
+    title.setStyle(sf::Text::Bold);
+    title.setColor(sf::Color::White);
+    title.setPosition(288-(title.getGlobalBounds().width/2), 300);
+
+    sf::Sprite sprite(texture);
+    mainWindow.draw(Game::playArea);
+    mainWindow.draw(title);
+    mainWindow.display();
+
+    char prompt[32];
+    sprintf(prompt,"Press Enter to Begin");
+    sf::Text text(prompt);
+    text.setCharacterSize(24);
+    text.setColor(sf::Color::White);
+    text.setPosition(288-text.getGlobalBounds().width/2, 728);
+
+    sf::Event event;
+    bool blinkCounter = 1;
+    int spriteCount = 0;
+    int start;
+    while(true)
+    {
+        if(blinkCounter)
+        {
+            start = clock();
+            blinkCounter = 0;
+        }
+        while(mainWindow.pollEvent(event))
+        {
+           if((event.type == (sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Return)))
+           {
+             return 1;
+           }
+           if((event.type == (sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape)) || event.type == sf::Event::Closed )
+           {
+             return 0;
+           }
+        }
+        if(((clock()-start)/(double) CLOCKS_PER_SEC) >= 0.5)
+        {
+            mainWindow.clear();
+            mainWindow.draw(Game::playArea);
+            //window.draw(sprite);
+            mainWindow.draw(title);
+            if(spriteCount % 2 == 0)
+            {
+                mainWindow.draw(text);
+            }
+            mainWindow.display();
+            spriteCount++;
+            blinkCounter = 1;
+        }
+    }
 }
 
 //checks for wasd and moves player accordingly
@@ -187,6 +255,34 @@ void Game::GameLoop()
     sf::Event currentEvent;
     while(mainWindow.pollEvent(currentEvent))
     {
+        //gotta handle resize shit here
+        if(currentEvent.type == sf::Event::Resized)
+        {
+            //std::cerr << "resized" << std::endl;
+            float aspectRatio = float(currentEvent.size.width)/float(currentEvent.size.height);
+            float newHeight = (1024.f*currentEvent.size.height)/currentEvent.size.width;
+            float newWidth = (768.f*currentEvent.size.width)/currentEvent.size.height;
+            if(aspectRatio > (4.f/3.f))
+            {
+                std::cerr << aspectRatio << std::endl;
+                float displace = (newWidth - 1024.f)/(-2.f);
+                View = sf::View(sf::FloatRect(displace, 0, newWidth, 768));
+            }
+            else if(aspectRatio < (4.f/3.f))
+            {
+                float displace = (newHeight - 768.f)/(-2.f);
+                View = sf::View(sf::FloatRect(0, displace, 1024, newHeight));
+            }
+            mainWindow.setView(View);
+        }
+        //broken fullscreen stuff, do not touch
+        else if(currentEvent.type == (sf::Event::KeyPressed) && currentEvent.key.code == (sf::Keyboard::F))
+        {
+//            mainWindow.close();
+//            std::vector<sf::VideoMode> FullscreenModes = sf::VideoMode::getFullscreenModes();
+//            mainWindow.create(FullscreenModes[0],"SHMUP Super Alpha", sf::Style::Fullscreen);
+        }
+
         switch(gameState)
         {
         case GameOver:
@@ -314,3 +410,5 @@ std::list<Enemy> Game::enemyList;
 sf::Clock Game::projClock;
 sf::Clock Game::frameClock;
 sf::RectangleShape Game::playArea;
+sf::View Game::View(sf::FloatRect(0, 0, 1024, 768));
+
