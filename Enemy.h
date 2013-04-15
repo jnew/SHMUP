@@ -13,11 +13,13 @@ public:
     bool isDestroyed;
     sf::Clock timeSinceHit;
     void updatePosition();
+    unsigned int getScore();
     void setVelocity(float, float);
     void trackPlayer(float, float, float);
     int enemyType;
 private:
     float velocity[2];
+    int score;
     int hitPoints;
     float pixelsPerSecond;
 };

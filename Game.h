@@ -5,6 +5,7 @@
 #include "SFML/Graphics.hpp"
 #include "SFML/Audio.hpp"
 #include "Background.h"
+#include "Scoreboard.h"
 #include "Player.h"
 #include "Enemy.h"
 #include "Projectile.h"
@@ -21,6 +22,8 @@ class Game
 public:
   static void Start();
   static sf::RectangleShape playArea;
+  static sf::RectangleShape spawnArea;
+  static sf::RectangleShape wholeArea;
 
 private:
   static void GameLoop();
@@ -39,12 +42,15 @@ private:
   static sf::RenderWindow mainWindow;
   static Player player1;
   static Background background;
+  static Scoreboard scoreboard;
   static std::list<Projectile> projList;
   static std::list<Enemy> enemyList;
   static sf::Clock projClock;
   static sf::Clock frameClock;
   static sf::View View;
   static sf::Sound sounds[5];
+  static sf::Music music[2];
+  static float bgMove;
 };
 
 

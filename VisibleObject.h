@@ -4,6 +4,7 @@
 #include "SFML/Window.hpp"
 #include "SFML/Graphics.hpp"
 #include <math.h>
+#include <iostream>
 
 class VisibleObject
 {

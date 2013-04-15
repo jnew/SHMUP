@@ -11,18 +11,29 @@ Enemy::Enemy(int enemyType, float x, float y)
     {
     case 1: //dummy enemy
     {
-        Load("images/Sprite-0002.png");
+        Load("images/Seeker.png");
         SetPosition(x, y);
         hitPoints = 100;
         pixelsPerSecond = 0;
+        score = 1000;
         break;
     }
     case 2: //tracker
     {
-        Load("images/Sprite-0002.png");
+        Load("images/Seeker.png");
         SetPosition(x, y);
         hitPoints = 50;
         pixelsPerSecond = 250;
+        score = 100;
+        break;
+    }
+    case 3: //boss
+    {
+        Load("images/Boss.png");
+        SetPosition(x, y);
+        hitPoints = 50;
+        pixelsPerSecond = 250;
+        score = 500;
         break;
     }
     }
@@ -40,7 +51,25 @@ Enemy::~Enemy()
 bool Enemy::takeDamage(int damageNumber) //returns 1 if destroyed, 0 if not
 {
     timeSinceHit.restart();
-    Load("images/Sprite_flash.png");
+    switch(enemyType)
+    {
+    case 1: //dummy enemy
+    {
+        Load("images/SeekerDMG.png");
+        break;
+    }
+    case 2: //tracker
+    {
+        Load("images/SeekerDMG.png");
+        break;
+    }
+    case 3: //boss
+    {
+        Load("images/BossDMG.png");
+        break;
+    }
+    }
+
     hitPoints -= damageNumber;
     if(hitPoints <= 0)
     {
@@ -76,4 +105,9 @@ void Enemy::trackPlayer(float frameTime, float playerx, float playery)
     velocity[0] = (xdist/hyp)*staticVelocity;
     velocity[1] = (ydist/hyp)*staticVelocity;
 
+}
+
+unsigned int Enemy::getScore()
+{
+    return score;
 }

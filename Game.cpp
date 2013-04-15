@@ -12,7 +12,12 @@ void Game::Start(void)
   mainWindow.setFramerateLimit(0);
   mainWindow.setMouseCursorVisible(false);
   playArea.setSize(sf::Vector2f(576,768));
-  playArea.setFillColor(sf::Color::Blue);
+  playArea.setFillColor(sf::Color::Yellow);
+  spawnArea.setSize(sf::Vector2f(576,400));
+  spawnArea.setPosition(0,-400);
+  spawnArea.setFillColor(sf::Color::Blue);
+  wholeArea.setSize(sf::Vector2f(1024,768));
+  wholeArea.setFillColor(sf::Color::Black);
   //mainWindow.setVerticalSyncEnabled(true);
   gameState = Uninitialized;
 
@@ -20,6 +25,7 @@ void Game::Start(void)
   sf::SoundBuffer projSound;
   projSound.loadFromFile("sounds/se_plst00.wav");
   sounds[0].setBuffer(projSound);
+  sounds[0].setVolume(50);
 
   sf::SoundBuffer okSound;
   okSound.loadFromFile("sounds/se_ok00.wav");
@@ -70,7 +76,10 @@ bool Game::ShowSplashScreen()
     title.setPosition(288-(title.getGlobalBounds().width/2), 300);
 
     sf::Sprite sprite(texture);
-    mainWindow.draw(Game::playArea);
+    mainWindow.draw(wholeArea);
+    mainWindow.draw(playArea);
+    mainWindow.draw(spawnArea);
+    background.Draw(mainWindow);
     mainWindow.draw(title);
     mainWindow.display();
 
@@ -80,6 +89,12 @@ bool Game::ShowSplashScreen()
     text.setCharacterSize(24);
     text.setColor(sf::Color::White);
     text.setPosition(288-text.getGlobalBounds().width/2, 728);
+
+    music[0].openFromFile("sounds/menu_bgm.ogg");
+    music[0].play();
+
+    music[1].openFromFile("sounds/stage_bgm.ogg");
+    music[1].setVolume(30);
 
     sf::Event event;
     bool blinkCounter = 1;
@@ -114,7 +129,9 @@ bool Game::ShowSplashScreen()
            }
            if((event.type == (sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Return)))
            {
+               music[0].stop();
                sounds[1].play();
+               music[1].play();
                 return 1;
            }
            if((event.type == (sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape)) || event.type == sf::Event::Closed )
@@ -125,8 +142,10 @@ bool Game::ShowSplashScreen()
         if(((clock()-start)/(double) CLOCKS_PER_SEC) >= 0.5)
         {
             mainWindow.clear();
-            mainWindow.draw(Game::playArea);
-            //window.draw(sprite);
+            mainWindow.draw(wholeArea);
+            mainWindow.draw(playArea);
+            mainWindow.draw(spawnArea);
+            background.Draw(mainWindow);
             mainWindow.draw(title);
             if(spriteCount % 2 == 0)
             {
@@ -170,14 +189,15 @@ void Game::CheckMovement(float playerSpeed, float frameTime)
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && gameState == Playing && Time >= (frameTime))
     {
         float velocity[] = {0,-20};
-        std::string filePath = "images/PlayerProj.png";
-        Projectile* newProj = new Projectile(velocity, player1.sprite.getPosition().x+15, player1.sprite.getPosition().y, filePath, 5);
+        std::string filePath = "images/proj.png";
+        Projectile* newProj = new Projectile(velocity, player1.sprite.getPosition().x+17, player1.sprite.getPosition().y, filePath, 5);
         projList.push_front(*newProj);
         if(sounds[0].getStatus() != sf::Sound::Playing)
             sounds[0].play();
         std::cerr << "projectile made" << std::endl;
         projClock.restart();
     }
+
 }
 
 //update projectiles
@@ -217,14 +237,14 @@ void Game::UpdateEnemies(float frameTime)
             }
         }
       }
-      if((*i).enemyType == 2)
+      if((*i).enemyType == 2 || (*i).enemyType == 3)
           (*i).trackPlayer(frameTime, player1.sprite.getPosition().x, player1.sprite.getPosition().y);
       (*i).updatePosition();
       if((*i).sprite.getGlobalBounds().intersects(player1.sprite.getGlobalBounds()))
       {
           player1.isDestroyed = true;
       }
-    }
+    }        
 }
 
 //delete anything flagged for deletion
@@ -251,10 +271,22 @@ void Game::CleanUp()
             {
                 enemyList.erase(i);
                 std::cerr << "enemy erased" << std::endl;
+                scoreboard.updateScore((*i).getScore());
                 i = enemyList.begin();
             }
             else
                 i++;
+    }
+    if(enemyList.empty() && gameState == Playing)
+    {
+        Enemy* newEnemy = new Enemy(3, 124, -100);
+        enemyList.push_front(*newEnemy);
+
+        Enemy* newEnemy2 = new Enemy(3, 268, -100);
+        enemyList.push_front(*newEnemy2);
+
+        Enemy* newEnemy3 = new Enemy(3, 412, -100);
+        enemyList.push_front(*newEnemy3);
     }
 }
 
@@ -281,7 +313,24 @@ void Game::DrawEnemies()
         {
             if(projList.empty() || (*i).timeSinceHit.getElapsedTime().asMilliseconds() > 50)
             {
-                (*i).Load("images/Sprite-0002.png");
+                switch((*i).enemyType)
+                {
+                case 1: //dummy enemy
+                {
+                    (*i).Load("images/Seeker.png");
+                    break;
+                }
+                case 2: //tracker
+                {
+                    (*i).Load("images/Seeker.png");
+                    break;
+                }
+                case 3: //boss
+                {
+                    (*i).Load("images/Boss.png");
+                    break;
+                }
+                }
             }
             (*i).Draw(mainWindow);
         }
@@ -331,7 +380,10 @@ void Game::GameLoop()
         case GameOver:
         {
             if(currentEvent.type == (sf::Event::KeyPressed) && currentEvent.key.code == (sf::Keyboard::Return))
+            {
+                scoreboard.clear();
                 gameState = Uninitialized;
+            }
         }
         case Playing:
         {
@@ -348,6 +400,10 @@ void Game::GameLoop()
         }
         case Paused:
         {
+            if(currentEvent.type == sf::Event::Closed || (currentEvent.type == (sf::Event::KeyPressed) && (currentEvent.key.code == sf::Keyboard::Escape)))
+            {
+                gameState = Exiting;
+            }
             if(currentEvent.type == (sf::Event::KeyPressed) && currentEvent.key.code == (sf::Keyboard::P))
             {
                 sounds[2].play();
@@ -364,18 +420,24 @@ void Game::GameLoop()
     case Uninitialized:
     {
         mainWindow.clear();
-        background.Load("images/Background.png");
-        player1.Load("images/player.png");
+        background.Load("images/Scrolling.png");
+        //background.SetPosition(0,-1200);
+        background.sprite.setTextureRect(sf::Rect<int>(0,1916,576,768));
+        bgMove = 0;
+        player1.Load("images/Player.png");
         player1.SetPosition(268,700);
         player1.isDestroyed = false;
+        scoreboard.updateLives(1);
+        scoreboard.updatePower(5);
+        scoreboard.updateScore(000000);
 
-        Enemy* newEnemy = new Enemy(2, 124, 100);
+        Enemy* newEnemy = new Enemy(2, 124, -100);
         enemyList.push_front(*newEnemy);
 
-        Enemy* newEnemy2 = new Enemy(2, 268, 100);
+        Enemy* newEnemy2 = new Enemy(2, 268, -100);
         enemyList.push_front(*newEnemy2);
 
-        Enemy* newEnemy3 = new Enemy(2, 412, 100);
+        Enemy* newEnemy3 = new Enemy(2, 412, -100);
         enemyList.push_front(*newEnemy3);
     }
     case ShowingSplash:
@@ -398,6 +460,7 @@ void Game::GameLoop()
             projList.clear();
             enemyList.clear();
             mainWindow.clear();
+            music[1].stop();
             sounds[4].play();
             gameState = GameOver;
             break;
@@ -405,6 +468,11 @@ void Game::GameLoop()
         if(!projList.empty())
             UpdateProj();
         UpdateEnemies(frameTime);
+        if(bgMove > 1916)
+        bgMove = 0;
+        bgMove += 50*frameTime;
+        background.sprite.setTextureRect(sf::Rect<int>(0,1916-bgMove,576,768));
+        //background.SetPosition(0,bgMove-1200);
         break;
     }
     }
@@ -414,7 +482,9 @@ void Game::GameLoop()
 
     //draw game
     mainWindow.clear(sf::Color(0,0,0));
-    mainWindow.draw(playArea);
+    mainWindow.draw(wholeArea);
+    //mainWindow.draw(playArea);
+    background.Draw(mainWindow);
     if(gameState == Playing)
     {
         char fps[32];
@@ -432,7 +502,7 @@ void Game::GameLoop()
         char gameOver[16];
         sprintf(gameOver,"GAME OVER");
         sf::Text endingMessage(gameOver);
-        endingMessage.setCharacterSize(30);
+        endingMessage.setCharacterSize(40);
         endingMessage.setStyle(sf::Text::Bold);
         endingMessage.setColor(sf::Color::Red);
         endingMessage.setPosition(288-(endingMessage.getGlobalBounds().width/2), 300);
@@ -443,6 +513,8 @@ void Game::GameLoop()
     DrawEnemies();
     if(player1.isDestroyed == false)
         player1.Draw(mainWindow);
+    mainWindow.draw(spawnArea);
+    scoreboard.drawScoreboard(mainWindow, player1.sprite);
     mainWindow.display();
 }
 
@@ -451,11 +523,16 @@ Game::GameState Game::gameState = Uninitialized;
 sf::RenderWindow Game::mainWindow;
 Player Game::player1;
 Background Game::background;
+Scoreboard Game::scoreboard;
 std::list<Projectile> Game::projList;
 std::list<Enemy> Game::enemyList;
 sf::Clock Game::projClock;
 sf::Clock Game::frameClock;
 sf::RectangleShape Game::playArea;
+sf::RectangleShape Game::spawnArea;
+sf::RectangleShape Game::wholeArea;
 sf::View Game::View(sf::FloatRect(0, 0, 1024, 768));
 sf::Sound Game::sounds[5];
+sf::Music Game::music[2];
+float Game::bgMove;
 

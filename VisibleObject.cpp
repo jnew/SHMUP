@@ -15,6 +15,7 @@ void VisibleObject::Load(std::string filepath)
   {
     filePath = "";
     isLoaded = false;
+    std::cerr << "oops, no file" << std::endl;
   }
   else
   {
