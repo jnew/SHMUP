@@ -41,3 +41,11 @@ void VisibleObject::SetPosition(float x, float y)
     sprite.setPosition(x,y);
   }
 }
+
+void VisibleObject::loadToggle()
+{
+    if(isLoaded)
+        isLoaded = false;
+    else
+        isLoaded = true;
+}

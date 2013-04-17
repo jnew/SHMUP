@@ -7,14 +7,21 @@ Projectile::Projectile()
     offScreen = false;
 }
 
-Projectile::Projectile(float velocity[2], float x, float y, std::string filePath, int power)
+Projectile::Projectile(float velocity[2], float x, float y, sf::Texture &texture, int power, bool isEnemy)
 {
-    Load(filePath);
-    this->velocity[0] = velocity[0];
-    this->velocity[1] = velocity[1];
+    sprite.setTexture(texture);
+    loadToggle();
     SetPosition(x, y);
+
+    initialVelocity[0] = velocity[0];
+    initialVelocity[1] = velocity[1];
+    this->velocity[0] = initialVelocity[0];
+    this->velocity[1] = initialVelocity[1];
+
     offScreen = false;
     this->power = power;
+    this->isEnemy = isEnemy;
+    std::cerr << "projectile made" << std::endl;
 }
 
 Projectile::~Projectile()
@@ -23,7 +30,9 @@ Projectile::~Projectile()
 
 void Projectile::updatePosition()
 {
-    sprite.move(int(velocity[0]), int(velocity[1]));
+    this->velocity[0] = initialVelocity[0];
+    this->velocity[1] = initialVelocity[1];
+    sprite.move(velocity[0], velocity[1]);
 }
 
 void Projectile::setVelocity(float velocity[2])

@@ -2,6 +2,7 @@
 #define ENEMY_H
 
 #include "VisibleObject.h"
+#include <cmath>
 
 class Enemy : public VisibleObject
 {
@@ -9,19 +10,28 @@ public:
     Enemy();
     Enemy(int, float, float);
     ~Enemy();
-    bool takeDamage(int);
-    bool isDestroyed;
-    sf::Clock timeSinceHit;
+    int getScore();
+    int getType();
+    int getHitPoints();
+    int getInitHealth();
+    void takeDamage(int);
     void updatePosition();
-    unsigned int getScore();
+    void setDestination(float, float);
     void setVelocity(float, float);
-    void trackPlayer(float, float, float);
-    int enemyType;
+    void trackPlayer(float, float);
+    bool fire();
+    bool destroyCheck();
+    sf::Clock timeSinceHit;
 private:
-    float velocity[2];
+    bool isDestroyed;
+    int enemyType;
     int score;
+    int fireClock;
     int hitPoints;
-    float pixelsPerSecond;
+    int startingHealth;
+    float pixelsPerFrame;
+    float velocity[2];
+    float destination[2];
 };
 
 #endif // ENEMY_H

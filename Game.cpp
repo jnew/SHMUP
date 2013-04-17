@@ -6,26 +6,33 @@ void Game::Start(void)
   if(gameState != Uninitialized)
     return;
 
-  mainWindow.create(sf::VideoMode(1024,768,32),"SHMUP Super Alpha"); //playing field is 576 by 768
+  //make the window
+  mainWindow.create(sf::VideoMode(1024,768,32),"Ace SPACE Man"); //playing field is 576 by 768
   mainWindow.setView(View);
   mainWindow.setKeyRepeatEnabled(false);
-  mainWindow.setFramerateLimit(0);
+  mainWindow.setFramerateLimit(60);
   mainWindow.setMouseCursorVisible(false);
   playArea.setSize(sf::Vector2f(576,768));
-  playArea.setFillColor(sf::Color::Yellow);
+  playArea.setFillColor(sf::Color::Black);
   spawnArea.setSize(sf::Vector2f(576,400));
   spawnArea.setPosition(0,-400);
-  spawnArea.setFillColor(sf::Color::Blue);
+  spawnArea.setFillColor(sf::Color::Green);
   wholeArea.setSize(sf::Vector2f(1024,768));
   wholeArea.setFillColor(sf::Color::Black);
   //mainWindow.setVerticalSyncEnabled(true);
   gameState = Uninitialized;
 
+  //load our main font
+  uni05.loadFromFile("uni05_53.ttf");
+
+  //testing optimization
+  textures.loadFromFile("images/proj.png");
+
   //load some sounds
   sf::SoundBuffer projSound;
   projSound.loadFromFile("sounds/se_plst00.wav");
   sounds[0].setBuffer(projSound);
-  sounds[0].setVolume(50);
+  sounds[0].setVolume(20);
 
   sf::SoundBuffer okSound;
   okSound.loadFromFile("sounds/se_ok00.wav");
@@ -68,8 +75,9 @@ bool Game::ShowSplashScreen()
     }
 
     char titleText[32];
-    sprintf(titleText,"SHMUP: THE GAME");
+    sprintf(titleText,"Ace SPACE Pilot");
     sf::Text title(titleText);
+    title.setFont(uni05);
     title.setCharacterSize(40);
     title.setStyle(sf::Text::Bold);
     title.setColor(sf::Color::White);
@@ -86,6 +94,7 @@ bool Game::ShowSplashScreen()
     char prompt[32];
     sprintf(prompt,"Press Enter to Begin");
     sf::Text text(prompt);
+    text.setFont(uni05);
     text.setCharacterSize(24);
     text.setColor(sf::Color::White);
     text.setPosition(288-text.getGlobalBounds().width/2, 728);
@@ -161,8 +170,7 @@ bool Game::ShowSplashScreen()
 //checks for wasd and moves player accordingly
 void Game::CheckMovement(float playerSpeed, float frameTime)
 {
-    unsigned int Time = projClock.getElapsedTime().asMilliseconds();
-    float moveDistance = playerSpeed*frameTime;
+    float moveDistance = playerSpeed;
     if((sf::Keyboard::isKeyPressed((sf::Keyboard::W)) ||  sf::Keyboard::isKeyPressed(sf::Keyboard::S)) && (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::D)))
         moveDistance = moveDistance/(sqrt(2));
 
@@ -186,16 +194,15 @@ void Game::CheckMovement(float playerSpeed, float frameTime)
         player1.sprite.move(moveDistance, 0.f);
     }
 
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && gameState == Playing && Time >= (frameTime))
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && gameState == Playing)
     {
-        float velocity[] = {0,-20};
-        std::string filePath = "images/proj.png";
-        Projectile* newProj = new Projectile(velocity, player1.sprite.getPosition().x+17, player1.sprite.getPosition().y, filePath, 5);
+        float velocity[] = {0,-30};
+        Projectile* newProj = new Projectile(velocity, player1.sprite.getPosition().x+5, player1.sprite.getPosition().y+20, textures, 5, false);
         projList.push_front(*newProj);
+        Projectile* newProj2 = new Projectile(velocity, player1.sprite.getPosition().x+29, player1.sprite.getPosition().y+20, textures, 5, false);
+        projList.push_front(*newProj2);
         if(sounds[0].getStatus() != sf::Sound::Playing)
             sounds[0].play();
-        std::cerr << "projectile made" << std::endl;
-        projClock.restart();
     }
 
 }
@@ -209,7 +216,7 @@ void Game::UpdateProj()
       if(!projList.empty())
       {
         (*i).updatePosition();
-        if((*i).sprite.getPosition().x > 576 || (*i).sprite.getPosition().y > 768 || (*i).sprite.getPosition().y < 0)
+        if((*i).sprite.getPosition().x < 0 || (*i).sprite.getPosition().x > 576 || (*i).sprite.getPosition().y > 768 || (*i).sprite.getPosition().y < 0)
         {
             (*i).offScreen = true;
         }
@@ -218,7 +225,7 @@ void Game::UpdateProj()
 }
 
 //detect collisions with player or projectiles, calculate damage and flag destroyed things, update velocities
-void Game::UpdateEnemies(float frameTime)
+void Game::UpdateEnemies()
 {
     std::list<Enemy>::iterator i;
     std::list<Projectile>::iterator j;
@@ -228,21 +235,34 @@ void Game::UpdateEnemies(float frameTime)
       {
         for(j = projList.begin(); j != projList.end(); ++j)
         {
-            if((*i).sprite.getGlobalBounds().intersects((*j).sprite.getGlobalBounds()))
+            if((*i).sprite.getGlobalBounds().intersects((*j).sprite.getGlobalBounds()) && !(*j).isEnemy)
             {
                 (*i).takeDamage((*j).power);
+                scoreboard.updateTargetHP((*i).getHitPoints(), (*i).getInitHealth());
                 if(sounds[3].getStatus() != sf::Sound::Playing)
                     sounds[3].play();
                 (*j).offScreen = true;
             }
         }
       }
-      if((*i).enemyType == 2 || (*i).enemyType == 3)
-          (*i).trackPlayer(frameTime, player1.sprite.getPosition().x, player1.sprite.getPosition().y);
+      if((*i).getType() == 2 || (*i).getType() == 3)
+          (*i).trackPlayer(player1.sprite.getPosition().x, player1.sprite.getPosition().y);
       (*i).updatePosition();
+
+      //enemy firing code goes here
+      if((*i).fire())
+      {
+          float velocity[] = {0,3};
+          Projectile* newProj = new Projectile(velocity, (*i).sprite.getPosition().x+75, (*i).sprite.getPosition().y+50, textures, 5, true);
+          projList.push_front(*newProj);
+          //if(sounds[0].getStatus() != sf::Sound::Playing)
+              //sounds[0].play();
+          //std::cerr << "projectile made" << std::endl;
+      }
+
       if((*i).sprite.getGlobalBounds().intersects(player1.sprite.getGlobalBounds()))
       {
-          player1.isDestroyed = true;
+          player1.loseLife();
       }
     }        
 }
@@ -258,7 +278,7 @@ void Game::CleanUp()
             if((*j).offScreen == true)
             {
                 projList.erase(j);
-                std::cerr << "projectile erased" << std::endl;
+                //std::cerr << "projectile erased" << std::endl;
                 j = projList.begin();
             }
             else
@@ -267,10 +287,10 @@ void Game::CleanUp()
     i = enemyList.begin();
     while(i != enemyList.end())
     {
-            if((*i).isDestroyed == true)
+        if((*i).destroyCheck())
             {
                 enemyList.erase(i);
-                std::cerr << "enemy erased" << std::endl;
+                //std::cerr << "enemy erased" << std::endl;
                 scoreboard.updateScore((*i).getScore());
                 i = enemyList.begin();
             }
@@ -279,13 +299,16 @@ void Game::CleanUp()
     }
     if(enemyList.empty() && gameState == Playing)
     {
-        Enemy* newEnemy = new Enemy(3, 124, -100);
+        Enemy* newEnemy = new Enemy(3, 300, -100);
+        newEnemy->setDestination(50, 300);
         enemyList.push_front(*newEnemy);
 
-        Enemy* newEnemy2 = new Enemy(3, 268, -100);
+        Enemy* newEnemy2 = new Enemy(3, 350, -100);
+        newEnemy2->setDestination(200, 300);
         enemyList.push_front(*newEnemy2);
 
-        Enemy* newEnemy3 = new Enemy(3, 412, -100);
+        Enemy* newEnemy3 = new Enemy(3, 400, -100);
+        newEnemy3->setDestination(350, 300);
         enemyList.push_front(*newEnemy3);
     }
 }
@@ -313,7 +336,7 @@ void Game::DrawEnemies()
         {
             if(projList.empty() || (*i).timeSinceHit.getElapsedTime().asMilliseconds() > 50)
             {
-                switch((*i).enemyType)
+                switch((*i).getType())
                 {
                 case 1: //dummy enemy
                 {
@@ -384,6 +407,7 @@ void Game::GameLoop()
                 scoreboard.clear();
                 gameState = Uninitialized;
             }
+            break;
         }
         case Playing:
         {
@@ -426,19 +450,21 @@ void Game::GameLoop()
         bgMove = 0;
         player1.Load("images/Player.png");
         player1.SetPosition(268,700);
-        player1.isDestroyed = false;
+        player1.revive();
+        scoreboard.updateFont(&uni05);
         scoreboard.updateLives(1);
         scoreboard.updatePower(5);
         scoreboard.updateScore(000000);
+        scoreboard.updateTargetHP(0,0);
 
-        Enemy* newEnemy = new Enemy(2, 124, -100);
-        enemyList.push_front(*newEnemy);
+//        Enemy* newEnemy = new Enemy(2, 124, -100);
+//        enemyList.push_front(*newEnemy);
 
-        Enemy* newEnemy2 = new Enemy(2, 268, -100);
-        enemyList.push_front(*newEnemy2);
+//        Enemy* newEnemy2 = new Enemy(2, 268, -100);
+//        enemyList.push_front(*newEnemy2);
 
-        Enemy* newEnemy3 = new Enemy(2, 412, -100);
-        enemyList.push_front(*newEnemy3);
+//        Enemy* newEnemy3 = new Enemy(2, 412, -100);
+//        enemyList.push_front(*newEnemy3);
     }
     case ShowingSplash:
     {
@@ -454,20 +480,21 @@ void Game::GameLoop()
     case Playing:
     {
         //check movement
-        CheckMovement(300, frameTime);
-        if(player1.isDestroyed)
+        CheckMovement(5, frameTime);
+        if(player1.destroyCheck())
         {
             projList.clear();
             enemyList.clear();
             mainWindow.clear();
             music[1].stop();
             sounds[4].play();
+            scoreboard.updateLives(-1);
             gameState = GameOver;
             break;
         }
         if(!projList.empty())
             UpdateProj();
-        UpdateEnemies(frameTime);
+        UpdateEnemies();
         if(bgMove > 1916)
         bgMove = 0;
         bgMove += 50*frameTime;
@@ -485,24 +512,22 @@ void Game::GameLoop()
     mainWindow.draw(wholeArea);
     //mainWindow.draw(playArea);
     background.Draw(mainWindow);
-    if(gameState == Playing)
-    {
-        char fps[32];
-        sprintf(fps,"%.2f\nESC to Quit\nP to Pause",(1/frameTime));
-        sf::Text text(fps);
-        text.setCharacterSize(18);
-        //text.setStyle(sf::Text::Bold);
-        text.setColor(sf::Color::Yellow);
-        text.setPosition(5, 0);
-
-        mainWindow.draw(text);
-    }
-    else if(gameState == GameOver)
+    char fps[32];
+    sprintf(fps,"%.2f\nESC to Quit\nP to Pause",(float(1)/frameTime));
+    sf::Text text(fps);
+    text.setCharacterSize(18);
+    //text.setStyle(sf::Text::Bold);
+    text.setFont(uni05);
+    text.setColor(sf::Color::Yellow);
+    text.setPosition(586, 700);
+    mainWindow.draw(text);
+    if(gameState == GameOver)
     {
         char gameOver[16];
         sprintf(gameOver,"GAME OVER");
         sf::Text endingMessage(gameOver);
         endingMessage.setCharacterSize(40);
+        endingMessage.setFont(uni05);
         endingMessage.setStyle(sf::Text::Bold);
         endingMessage.setColor(sf::Color::Red);
         endingMessage.setPosition(288-(endingMessage.getGlobalBounds().width/2), 300);
@@ -511,22 +536,21 @@ void Game::GameLoop()
     }
     DrawProj();
     DrawEnemies();
-    if(player1.isDestroyed == false)
+    if(player1.destroyCheck() == false)
         player1.Draw(mainWindow);
-    mainWindow.draw(spawnArea);
+    //mainWindow.draw(spawnArea);
     scoreboard.drawScoreboard(mainWindow, player1.sprite);
     mainWindow.display();
 }
 
 
-Game::GameState Game::gameState = Uninitialized;
+Game::GameState Game::gameState;
 sf::RenderWindow Game::mainWindow;
 Player Game::player1;
 Background Game::background;
 Scoreboard Game::scoreboard;
 std::list<Projectile> Game::projList;
 std::list<Enemy> Game::enemyList;
-sf::Clock Game::projClock;
 sf::Clock Game::frameClock;
 sf::RectangleShape Game::playArea;
 sf::RectangleShape Game::spawnArea;
@@ -534,5 +558,7 @@ sf::RectangleShape Game::wholeArea;
 sf::View Game::View(sf::FloatRect(0, 0, 1024, 768));
 sf::Sound Game::sounds[5];
 sf::Music Game::music[2];
+sf::Texture Game::textures;
 float Game::bgMove;
+sf::Font Game::uni05;
 

@@ -30,27 +30,27 @@ private:
   static bool ShowSplashScreen();
   static void CheckMovement(float, float);
   static void UpdateProj();
-  static void UpdateEnemies(float);
+  static void UpdateEnemies();
   static void DrawProj();
   static void DrawEnemies();
   static void CleanUp();
 
-  enum GameState { Uninitialized, ShowingSplash, Paused,
-          ShowingMenu, Playing, GameOver, Exiting };
+  enum GameState { Uninitialized, ShowingSplash, Paused, Playing, GameOver, Exiting };
 
   static GameState gameState;
   static sf::RenderWindow mainWindow;
+  static sf::View View;
   static Player player1;
   static Background background;
   static Scoreboard scoreboard;
   static std::list<Projectile> projList;
   static std::list<Enemy> enemyList;
-  static sf::Clock projClock;
   static sf::Clock frameClock;
-  static sf::View View;
   static sf::Sound sounds[5];
   static sf::Music music[2];
+  static sf::Texture textures;
   static float bgMove;
+  static sf::Font uni05;
 };
 
 
