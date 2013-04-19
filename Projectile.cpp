@@ -21,7 +21,7 @@ Projectile::Projectile(float velocity[2], float x, float y, sf::Texture &texture
     offScreen = false;
     this->power = power;
     this->isEnemy = isEnemy;
-    std::cerr << "projectile made" << std::endl;
+    sprite.setOrigin(sprite.getLocalBounds().width/2,sprite.getLocalBounds().height/2);
 }
 
 Projectile::~Projectile()
@@ -33,6 +33,7 @@ void Projectile::updatePosition()
     this->velocity[0] = initialVelocity[0];
     this->velocity[1] = initialVelocity[1];
     sprite.move(velocity[0], velocity[1]);
+    //std::cerr << "updated!" << std::endl;
 }
 
 void Projectile::setVelocity(float velocity[2])

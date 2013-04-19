@@ -79,7 +79,10 @@ void Scoreboard::updateScore(unsigned int score)
 
 void Scoreboard::updateTargetHP(unsigned int newHealth, unsigned int initHealth)
 {
-    currentHealth = newHealth;
+    if(newHealth < 0)
+        currentHealth = 0;
+    else
+        currentHealth = newHealth;
     sprintf(healthString,"Target Health: %04d", currentHealth);
     this->targetHP.setString(healthString);
     healthRemaining.setTextureRect(sf::Rect<int>(0,0,(float(newHealth)/float(5000))*500, 5));
