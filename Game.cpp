@@ -231,6 +231,8 @@ void Game::UpdateEnemies()
       if((*i).getType() == 2)
           (*i).trackPlayer(player1);
 
+      (*i).checkProjCollision(player1);
+
       (*i).updatePosition();
 
       (*i).fireProjectile(textures);
@@ -268,15 +270,15 @@ void Game::CleanUp()
 
     if(enemyList.empty() && gameState == Playing)
     {
-        Enemy* newEnemy = new Enemy(3, 300, -100);
-        newEnemy->setDestination(50, 300);
+        Enemy* newEnemy = new Enemy(3, 576/2, -100);
+        newEnemy->setDestination(576/2, 200);
         enemyList.push_front(*newEnemy);
 
-        Enemy* newEnemy2 = new Enemy(2, 350, -100);
+        Enemy* newEnemy2 = new Enemy(2, 0, -100);
         newEnemy2->setDestination(200, 300);
         enemyList.push_front(*newEnemy2);
 
-        Enemy* newEnemy3 = new Enemy(2, 400, -100);
+        Enemy* newEnemy3 = new Enemy(2, 576, -100);
         newEnemy3->setDestination(350, 300);
         enemyList.push_front(*newEnemy3);
     }

@@ -19,6 +19,7 @@ public:
     void updateProjectiles();
     void cleanProjectiles();
     void drawProjectiles(sf::RenderWindow &);
+    bool checkProjCollision(Player &);
 
     int getScore();
     int getType();

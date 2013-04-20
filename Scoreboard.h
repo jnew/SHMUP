@@ -25,9 +25,10 @@ private:
     sf::Text lives;
     sf::Text targetHP;
     sf::Sprite lifeSprite;
-    sf::Sprite healthRemaining;
     sf::Image healthSprite;
-    sf::Texture healthBar;
+    sf::RectangleShape healthBar;
+    sf::RectangleShape healthBar2;
+    sf::RectangleShape healthBar3;
     char powerString[32];
     char livesString[32];
     char scoreString[32];

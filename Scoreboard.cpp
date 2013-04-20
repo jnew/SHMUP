@@ -8,8 +8,15 @@ Scoreboard::Scoreboard()
     power.setPosition(586, 40);
     lifeSprite.setPosition(586, 100);
     targetHP.setPosition(586, 160);
-    healthRemaining.setTexture(healthBar);
-    healthRemaining.setPosition(10, 10);
+    healthBar.setPosition(10,10);
+    healthBar2.setPosition(10,10);
+    healthBar3.setPosition(10,10);
+    healthBar.setSize(sf::Vector2f(0,0));
+    healthBar2.setSize(sf::Vector2f(0,0));
+    healthBar3.setSize(sf::Vector2f(0,0));
+    healthBar.setFillColor(sf::Color::Green);
+    healthBar2.setFillColor(sf::Color::Yellow);
+    healthBar3.setFillColor(sf::Color::Red);
 }
 
 Scoreboard::Scoreboard(unsigned int score, unsigned int lives, unsigned int power)
@@ -53,7 +60,9 @@ void Scoreboard::drawScoreboard(sf::RenderWindow &window, sf::Sprite player)
     window.draw(lives);
     window.draw(power);
     window.draw(targetHP);
-    window.draw(healthRemaining);
+    window.draw(healthBar3);
+    window.draw(healthBar2);
+    window.draw(healthBar);
 }
 
 void Scoreboard::updateLives(unsigned int lives)
@@ -85,7 +94,35 @@ void Scoreboard::updateTargetHP(unsigned int newHealth, unsigned int initHealth)
         currentHealth = newHealth;
     sprintf(healthString,"Target Health: %04d", currentHealth);
     this->targetHP.setString(healthString);
-    healthRemaining.setTextureRect(sf::Rect<int>(0,0,(float(newHealth)/float(5000))*500, 5));
+
+    float barOneW, barTwoW, barThreeW;
+    if(newHealth > 10000)
+    {
+        barOneW = newHealth-10000;
+        barTwoW = 5000;
+        barThreeW = 5000;
+    }
+    else if(newHealth > 5000)
+    {
+        barOneW = 0;
+        barTwoW = newHealth-5000;
+        barThreeW = 5000;
+    }
+    else if(newHealth > 0)
+    {
+        barOneW = 0;
+        barTwoW = 0;
+        barThreeW = newHealth;
+    }
+    else
+    {
+        barOneW = 0;
+        barTwoW = 0;
+        barThreeW = 0;
+    }
+    healthBar.setSize(sf::Vector2f((barOneW/float(5000))*556, 5));
+    healthBar2.setSize(sf::Vector2f((barTwoW/float(5000))*556, 5));
+    healthBar3.setSize(sf::Vector2f((barThreeW/float(5000))*556, 5));
 }
 
 void Scoreboard::updateFont(sf::Font* newFont)

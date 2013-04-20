@@ -26,7 +26,7 @@ Enemy::Enemy(int enemyType, float x, float y)
         Load("images/Seeker.png");
         center[0] = 29/2;
         center[1] = 48;
-        hitPoints = 25;
+        hitPoints = 300;
         pixelsPerFrame = 4;
         score = 100;
         break;
@@ -36,7 +36,7 @@ Enemy::Enemy(int enemyType, float x, float y)
         Load("images/Boss.png");
         center[0] = 144/2;
         center[1] = 101;
-        hitPoints = 500;
+        hitPoints = 15000;
         pixelsPerFrame = 2;
         score = 500;
         break;
@@ -63,12 +63,12 @@ void Enemy::fireProjectile(sf::Texture texture[])
     {
         float projVelocity[2];
         projVelocity[0] = -4;
-        for(int i = 0; i < 5; i++)
+        for(int i = 0; i < 10; i++)
         {
-        projVelocity[1] = 3;
+        projVelocity[1] = 2;
         Projectile* newProj = new Projectile(projVelocity, sprite.getPosition().x, sprite.getPosition().y, texture[1], 5, false);
         projList.push_front(*newProj);
-        projVelocity[0] += 2;
+        projVelocity[0] += 1;
         }
     }
 }
@@ -116,6 +116,22 @@ void Enemy::drawProjectiles(sf::RenderWindow &window)
             (*i).Draw(window);
         }
     }
+}
+
+bool Enemy::checkProjCollision(Player &player)
+{
+    bool hit = false;
+    std::list<Projectile>::iterator j;
+    for(j = projList.begin(); j != projList.end(); ++j)
+    {
+        if((*j).sprite.getGlobalBounds().intersects(sf::Rect<float>(player.sprite.getGlobalBounds().left+(19/2), player.sprite.getGlobalBounds().top+10,player.sprite.getGlobalBounds().width/2, player.sprite.getGlobalBounds().height/2)))
+        {
+            player.loseLife();
+            (*j).offScreen = true;
+            hit = true;
+        }
+    }
+    return hit;
 }
 
 void Enemy::takeDamage(int damageNumber) //returns 1 if destroyed, 0 if not
@@ -210,7 +226,7 @@ void Enemy::trackPlayer(Player &target)
 
 bool Enemy::fire()
 {
-    if(enemyType == 3 && fireClock >= 60 && !isDestroyed)
+    if(enemyType == 3 && fireClock >= 1 && !isDestroyed)
     {
         fireClock = 0;
         return true;
