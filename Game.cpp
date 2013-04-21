@@ -75,9 +75,8 @@ bool Game::ShowSplashScreen()
         return 0;
     }
 
-    char titleText[32];
-    sprintf(titleText,"Ace SPACE Pilot");
-    sf::Text title(titleText);
+    sf::String titleText("Ace SPACE Pilot");
+    sf::Text title(titleText, uni05);
     title.setFont(uni05);
     title.setCharacterSize(40);
     title.setStyle(sf::Text::Bold);
@@ -92,9 +91,8 @@ bool Game::ShowSplashScreen()
     mainWindow.draw(title);
     mainWindow.display();
 
-    char prompt[32];
-    sprintf(prompt,"Press Enter to Begin");
-    sf::Text text(prompt);
+    sf::String prompt("Press Enter to Begin");
+    sf::Text text(prompt, uni05);
     text.setFont(uni05);
     text.setCharacterSize(24);
     text.setColor(sf::Color::White);
@@ -449,7 +447,8 @@ void Game::GameLoop()
     background.Draw(mainWindow);
     char fps[32];
     sprintf(fps,"%.2f\nESC to Quit\nP to Pause",(float(1)/frameTime));
-    sf::Text text(fps);
+    sf::String fpsString(fps);
+    sf::Text text(fpsString, uni05);
     text.setCharacterSize(18);
     //text.setStyle(sf::Text::Bold);
     text.setFont(uni05);
@@ -458,9 +457,8 @@ void Game::GameLoop()
     mainWindow.draw(text);
     if(gameState == GameOver)
     {
-        char gameOver[16];
-        sprintf(gameOver,"GAME OVER");
-        sf::Text endingMessage(gameOver);
+        sf::String gameOver("GAME OVER");
+        sf::Text endingMessage(gameOver, uni05);
         endingMessage.setCharacterSize(40);
         endingMessage.setFont(uni05);
         endingMessage.setStyle(sf::Text::Bold);
