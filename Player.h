@@ -19,6 +19,7 @@ public:
     void updateProjectiles();
     void cleanProjectiles();
     void drawProjectiles(sf::RenderWindow &);
+    void clearProjectiles();
     bool checkProjCollision(Enemy &, Scoreboard &);
 
     bool destroyCheck();

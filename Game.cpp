@@ -13,7 +13,7 @@ void Game::Start(void)
   mainWindow.setFramerateLimit(60);
   mainWindow.setMouseCursorVisible(false);
   playArea.setSize(sf::Vector2f(576,768));
-  playArea.setFillColor(sf::Color::Black);
+  playArea.setFillColor(sf::Color::Blue);
   spawnArea.setSize(sf::Vector2f(576,400));
   spawnArea.setPosition(0,-400);
   spawnArea.setFillColor(sf::Color::Green);
@@ -233,7 +233,7 @@ void Game::UpdateEnemies()
 
       (*i).updatePosition();
 
-      (*i).fireProjectile(textures);
+      (*i).fireProjectile(textures, 2);
 
       if((*i).sprite.getGlobalBounds().intersects(player1.sprite.getGlobalBounds()) && !(*i).destroyCheck())
       {
@@ -255,15 +255,15 @@ void Game::CleanUp()
     i = enemyList.begin();
     while(i != enemyList.end())
     {
+        if((*i).destroyCheck())
+            scoreboard.updateScore((*i).getScore());
         if((*i).destroyCheck() && (*i).projList.empty())
-            {
-                enemyList.erase(i);
-                //std::cerr << "enemy erased" << std::endl;
-                scoreboard.updateScore((*i).getScore());
-                i = enemyList.begin();
-            }
-            else
-                i++;
+        {
+            enemyList.erase(i);
+            i = enemyList.begin();
+        }
+        else
+            i++;
     }
 
     if(enemyList.empty() && gameState == Playing)
@@ -279,6 +279,22 @@ void Game::CleanUp()
         Enemy* newEnemy3 = new Enemy(2, 576, -100);
         newEnemy3->setDestination(350, 300);
         enemyList.push_front(*newEnemy3);
+
+        Enemy* newEnemy4 = new Enemy(2, 60, -100);
+        newEnemy4->setDestination(200, 300);
+        enemyList.push_front(*newEnemy4);
+
+        Enemy* newEnemy5 = new Enemy(2, 536, -100);
+        newEnemy5->setDestination(350, 300);
+        enemyList.push_front(*newEnemy5);
+
+        Enemy* newEnemy6 = new Enemy(1, 30, 100);
+        newEnemy6->setDestination(200, 300);
+        enemyList.push_front(*newEnemy6);
+
+        Enemy* newEnemy7 = new Enemy(1, 506, 100);
+        newEnemy7->setDestination(350, 300);
+        enemyList.push_front(*newEnemy7);
     }
 }
 
@@ -351,6 +367,10 @@ void Game::GameLoop()
                 scoreboard.clear();
                 gameState = Uninitialized;
             }
+            if(currentEvent.type == sf::Event::Closed || (currentEvent.type == (sf::Event::KeyPressed) && (currentEvent.key.code == sf::Keyboard::Escape)))
+            {
+                gameState = Exiting;
+            }
             break;
         }
         case Playing:
@@ -420,6 +440,7 @@ void Game::GameLoop()
         {
             enemyList.clear();
             mainWindow.clear();
+            player1.clearProjectiles();
             music[1].stop();
             sounds[4].play();
             scoreboard.updateLives(-1);

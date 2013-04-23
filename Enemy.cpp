@@ -6,6 +6,9 @@ Enemy::Enemy()
 
 Enemy::Enemy(int enemyType, float x, float y)
 {
+    pattern[0] = &Enemy::pattern1;
+    pattern[1] = &Enemy::pattern2;
+    pattern[2] = &Enemy::pattern3;
     this->enemyType = enemyType;
     loadToggle();
     SetPosition(x, y);
@@ -19,6 +22,7 @@ Enemy::Enemy(int enemyType, float x, float y)
         hitPoints = 100;
         pixelsPerFrame = 0;
         score = 1000;
+        fires = true;
         break;
     }
     case 2: //tracker
@@ -26,9 +30,10 @@ Enemy::Enemy(int enemyType, float x, float y)
         Load("images/Seeker.png");
         center[0] = 29/2;
         center[1] = 48;
-        hitPoints = 300;
+        hitPoints = 100;
         pixelsPerFrame = 4;
         score = 100;
+        fires = false;
         break;
     }
     case 3: //boss
@@ -39,6 +44,7 @@ Enemy::Enemy(int enemyType, float x, float y)
         hitPoints = 15000;
         pixelsPerFrame = 2;
         score = 500;
+        fires = true;
         break;
     }
     }
@@ -48,8 +54,11 @@ Enemy::Enemy(int enemyType, float x, float y)
     velocity[0] = 0;
     velocity[1] = 0;
     isDestroyed = false;
+    isScored = false;
     timeSinceHit.restart();
     fireClock = 0;
+    popped = 0;
+    angle = 0;
 }
 
 Enemy::~Enemy()
@@ -57,20 +66,78 @@ Enemy::~Enemy()
 
 }
 
-void Enemy::fireProjectile(sf::Texture texture[])
+void Enemy::fireProjectile(sf::Texture textureList[], int patternNumber)
 {
-    if(fire())
+    if(enemyType == 1)
+        (this->*pattern[0])(textureList);
+    else if(fires)
+        (this->*pattern[patternNumber])(textureList);
+    else if(enemyType == 2 && isDestroyed && !popped)
+    {
+        fireClock = 60;
+        isDestroyed = false;
+        popped = true;
+        (this->*pattern[1])(textureList);
+        isDestroyed = true;
+    }
+}
+
+void Enemy::pattern1(sf::Texture textureList[])
+{
+    if(fireClock >= 60 && !isDestroyed)
     {
         float projVelocity[2];
-        projVelocity[0] = -4;
-        for(int i = 0; i < 10; i++)
-        {
+        projVelocity[0] = -.5;
         projVelocity[1] = 2;
-        Projectile* newProj = new Projectile(projVelocity, sprite.getPosition().x, sprite.getPosition().y, texture[1], 5, false);
+        for(int i = 0; i < 4; i++)
+        {
+        Projectile* newProj = new Projectile(projVelocity, sprite.getPosition().x, sprite.getPosition().y, textureList[1], 5, false);
         projList.push_front(*newProj);
-        projVelocity[0] += 1;
+        projVelocity[0] += .25;
+        projVelocity[1] += .25;
         }
+        fireClock = 0;
     }
+    else
+        fireClock++;
+}
+
+void Enemy::pattern2(sf::Texture textureList[])
+{
+    if(fireClock >= 40 && !isDestroyed)
+    {
+        float projVelocity[2];
+        float magnitude = 3;
+        angle = 0;
+        for(int i = 0; i < 16; i++)
+        {
+            projVelocity[0] = sin(angle)*magnitude;
+            projVelocity[1] = cos(angle)*magnitude;
+            Projectile* newProj = new Projectile(projVelocity, sprite.getPosition().x, sprite.getPosition().y, textureList[1], 5, false);
+            projList.push_front(*newProj);
+            angle += (3.14159)/8;
+        }
+        fireClock = 0;
+    }
+    else
+        fireClock++;
+}
+
+void Enemy::pattern3(sf::Texture textureList[])
+{
+    if(fireClock >= 5 && !isDestroyed)
+    {
+        float projVelocity[2];
+        float magnitude = 3;
+        projVelocity[0] = sin(angle)*magnitude;
+        projVelocity[1] = cos(angle)*magnitude;
+        Projectile* newProj = new Projectile(projVelocity, sprite.getPosition().x, sprite.getPosition().y, textureList[1], 5, false);
+        projList.push_front(*newProj);
+        angle += (3.14159)/8;
+        fireClock = 0;
+    }
+    else
+        fireClock++;
 }
 
 void Enemy::updateProjectiles()
@@ -226,7 +293,7 @@ void Enemy::trackPlayer(Player &target)
 
 bool Enemy::fire()
 {
-    if(enemyType == 3 && fireClock >= 1 && !isDestroyed)
+    if(enemyType == 3 && fireClock >= 30 && !isDestroyed)
     {
         fireClock = 0;
         return true;
@@ -280,7 +347,12 @@ void Enemy::rotate(Player &target)
 
 int Enemy::getScore()
 {
-    return score;
+    if(!isScored)
+    {
+        isScored = true;
+        return score;
+    }
+    return 0;
 }
 
 int Enemy::getHitPoints()

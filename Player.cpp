@@ -65,6 +65,11 @@ void Player::drawProjectiles(sf::RenderWindow &window)
     }
 }
 
+void Player::clearProjectiles()
+{
+    projList.clear();
+}
+
 bool Player::checkProjCollision(Enemy &enemy, Scoreboard &scoreboard)
 {
     bool hit = false;

@@ -15,11 +15,15 @@ public:
     Enemy(int, float, float);
     ~Enemy();
 
-    void fireProjectile(sf::Texture[]);
+    void fireProjectile(sf::Texture[], int);
     void updateProjectiles();
     void cleanProjectiles();
     void drawProjectiles(sf::RenderWindow &);
     bool checkProjCollision(Player &);
+
+    void pattern1(sf::Texture[]);
+    void pattern2(sf::Texture[]);
+    void pattern3(sf::Texture[]);
 
     int getScore();
     int getType();
@@ -37,7 +41,15 @@ public:
     sf::Clock timeSinceHit;
     std::list<Projectile> projList;
 private:
+    //for patterns
+    float angle;
 
+    void (Enemy::*pattern[5])(sf::Texture[]);
+    //for seekers
+    bool popped;
+    bool isScored;
+
+    bool fires;
     bool isDestroyed;
     int enemyType;
     int score;
