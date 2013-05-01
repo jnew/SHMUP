@@ -27,7 +27,7 @@ void Game::Start(void)
 
   //testing optimization
   textures[0].loadFromFile("images/proj.png");
-  textures[1].loadFromFile("images/bullet1.jpg");
+  textures[1].loadFromFile("images/bullet1.png");
 
   //load some sounds
   sf::SoundBuffer projSound;
@@ -414,13 +414,13 @@ void Game::GameLoop()
     {
         mainWindow.clear();
         background0.Load("images/background0.png");
-        background1.Load("images/background1.png");
+        //background1.Load("images/background1.png");
         background2.Load("images/background2.png");
         background3.Load("images/background3.png");
-        background0.sprite.setTextureRect(sf::Rect<int>(0,(1000-768),576,768));
-        background1.sprite.setTextureRect(sf::Rect<int>(0,(1000-768),576,768));
-        background2.sprite.setTextureRect(sf::Rect<int>(0,(1000-768),576,768));
-        background3.sprite.setTextureRect(sf::Rect<int>(0,(1000-768),576,768));
+        background0.sprite.setTextureRect(sf::Rect<int>(0,(2000-768),576,768));
+        //background1.sprite.setTextureRect(sf::Rect<int>(0,(2000-768),576,768));
+        background2.sprite.setTextureRect(sf::Rect<int>(0,(2000-768),576,768));
+        background3.sprite.setTextureRect(sf::Rect<int>(0,(2000-768),576,768));
         bgMove1 = 0;
         bgMove2 = 0;
         bgMove3 = 0;
@@ -461,18 +461,18 @@ void Game::GameLoop()
         }
         UpdateProj();
         UpdateEnemies();
-        if(bgMove1 > (1000-768))
+        if(bgMove1 > (2000-768))
             bgMove1 = 0;
-        if(bgMove2 > (1000-768))
+        if(bgMove2 > (2000-768))
             bgMove2 = 0;
-        if(bgMove3 > (1000-768))
+        if(bgMove3 > (2000-768))
             bgMove3 = 0;
         bgMove1 += 20*frameTime;
         bgMove2 += 50*frameTime;
         bgMove3 += 150*frameTime;
-        background1.sprite.setTextureRect(sf::Rect<int>(0,(1000-768)-bgMove1,576,768));
-        background2.sprite.setTextureRect(sf::Rect<int>(0,(1000-768)-bgMove2,576,768));
-        background3.sprite.setTextureRect(sf::Rect<int>(0,(1000-768)-bgMove3,576,768));
+        //background1.sprite.setTextureRect(sf::Rect<int>(0,(2000-768)-bgMove1,576,768));
+        background2.sprite.setTextureRect(sf::Rect<int>(0,(2000-768)-bgMove2,576,768));
+        background3.sprite.setTextureRect(sf::Rect<int>(0,(2000-768)-bgMove3,576,768));
         break;
     }
     }
@@ -485,7 +485,7 @@ void Game::GameLoop()
     mainWindow.draw(wholeArea);
     mainWindow.draw(playArea);
     background0.Draw(mainWindow);
-    background1.Draw(mainWindow);
+    //background1.Draw(mainWindow);
     background2.Draw(mainWindow);
     char fps[32];
     sprintf(fps,"%.2f\nESC to Quit\nP to Pause",(float(1)/frameTime));
