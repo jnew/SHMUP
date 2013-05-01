@@ -215,7 +215,7 @@ void Enemy::takeDamage(int damageNumber) //returns 1 if destroyed, 0 if not
     }
     case 2: //tracker
     {
-        Load("images/SeekerDMG.png");
+        Load("images/Seeker.png");
         //std::cerr << "loaded shit" << std::endl;
 
         break;

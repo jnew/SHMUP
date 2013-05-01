@@ -64,7 +64,7 @@ void Game::Start(void)
 bool Game::ShowSplashScreen()
 {
     sf::Image image;
-    if(image.loadFromFile("images/Background.png") != true)
+    if(image.loadFromFile("images/background0.png") != true)
     {
         return 0;
     }
@@ -87,7 +87,10 @@ bool Game::ShowSplashScreen()
     mainWindow.draw(wholeArea);
     mainWindow.draw(playArea);
     mainWindow.draw(spawnArea);
-    background.Draw(mainWindow);
+    background0.Draw(mainWindow);
+    background1.Draw(mainWindow);
+    background2.Draw(mainWindow);
+    background3.Draw(mainWindow);
     mainWindow.draw(title);
     mainWindow.display();
 
@@ -119,7 +122,6 @@ bool Game::ShowSplashScreen()
         {
            if(event.type == sf::Event::Resized)
            {
-                //std::cerr << "resized" << std::endl;
                 float aspectRatio = float(event.size.width)/float(event.size.height);
                 float newHeight = (1024.f*event.size.height)/event.size.width;
                 float newWidth = (768.f*event.size.width)/event.size.height;
@@ -153,7 +155,10 @@ bool Game::ShowSplashScreen()
             mainWindow.draw(wholeArea);
             mainWindow.draw(playArea);
             mainWindow.draw(spawnArea);
-            background.Draw(mainWindow);
+            background0.Draw(mainWindow);
+            background1.Draw(mainWindow);
+            background2.Draw(mainWindow);
+            background3.Draw(mainWindow);
             mainWindow.draw(title);
             if(spriteCount % 2 == 0)
             {
@@ -408,10 +413,17 @@ void Game::GameLoop()
     case Uninitialized:
     {
         mainWindow.clear();
-        background.Load("images/Scrolling.png");
-        //background.SetPosition(0,-1200);
-        background.sprite.setTextureRect(sf::Rect<int>(0,1916,576,768));
-        bgMove = 0;
+        background0.Load("images/background0.png");
+        background1.Load("images/background1.png");
+        background2.Load("images/background2.png");
+        background3.Load("images/background3.png");
+        background0.sprite.setTextureRect(sf::Rect<int>(0,(1000-768),576,768));
+        background1.sprite.setTextureRect(sf::Rect<int>(0,(1000-768),576,768));
+        background2.sprite.setTextureRect(sf::Rect<int>(0,(1000-768),576,768));
+        background3.sprite.setTextureRect(sf::Rect<int>(0,(1000-768),576,768));
+        bgMove1 = 0;
+        bgMove2 = 0;
+        bgMove3 = 0;
         player1.Load("images/Player.png");
         player1.SetPosition(576/2,700);
         player1.revive();
@@ -449,11 +461,18 @@ void Game::GameLoop()
         }
         UpdateProj();
         UpdateEnemies();
-        if(bgMove > 1916)
-        bgMove = 0;
-        bgMove += 50*frameTime;
-        background.sprite.setTextureRect(sf::Rect<int>(0,1916-bgMove,576,768));
-        //background.SetPosition(0,bgMove-1200);
+        if(bgMove1 > (1000-768))
+            bgMove1 = 0;
+        if(bgMove2 > (1000-768))
+            bgMove2 = 0;
+        if(bgMove3 > (1000-768))
+            bgMove3 = 0;
+        bgMove1 += 20*frameTime;
+        bgMove2 += 50*frameTime;
+        bgMove3 += 150*frameTime;
+        background1.sprite.setTextureRect(sf::Rect<int>(0,(1000-768)-bgMove1,576,768));
+        background2.sprite.setTextureRect(sf::Rect<int>(0,(1000-768)-bgMove2,576,768));
+        background3.sprite.setTextureRect(sf::Rect<int>(0,(1000-768)-bgMove3,576,768));
         break;
     }
     }
@@ -464,8 +483,10 @@ void Game::GameLoop()
     //draw game
     mainWindow.clear(sf::Color(0,0,0));
     mainWindow.draw(wholeArea);
-    //mainWindow.draw(playArea);
-    background.Draw(mainWindow);
+    mainWindow.draw(playArea);
+    background0.Draw(mainWindow);
+    background1.Draw(mainWindow);
+    background2.Draw(mainWindow);
     char fps[32];
     sprintf(fps,"%.2f\nESC to Quit\nP to Pause",(float(1)/frameTime));
     sf::String fpsString(fps);
@@ -492,7 +513,8 @@ void Game::GameLoop()
     DrawEnemies();
     if(player1.destroyCheck() == false)
         player1.Draw(mainWindow);
-    //mainWindow.draw(spawnArea);
+    background3.Draw(mainWindow);
+    mainWindow.draw(spawnArea);
     scoreboard.drawScoreboard(mainWindow, player1.sprite);
     mainWindow.display();
 }
@@ -501,7 +523,10 @@ void Game::GameLoop()
 Game::GameState Game::gameState;
 sf::RenderWindow Game::mainWindow;
 Player Game::player1;
-Background Game::background;
+Background Game::background0;
+Background Game::background1;
+Background Game::background2;
+Background Game::background3;
 Scoreboard Game::scoreboard;
 std::list<Enemy> Game::enemyList;
 sf::Clock Game::frameClock;
@@ -512,6 +537,8 @@ sf::View Game::View(sf::FloatRect(0, 0, 1024, 768));
 sf::Sound Game::sounds[5];
 sf::Music Game::music[2];
 sf::Texture Game::textures[2];
-float Game::bgMove;
+float Game::bgMove1;
+float Game::bgMove2;
+float Game::bgMove3;
 sf::Font Game::uni05;
 

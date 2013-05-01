@@ -3,7 +3,6 @@
 Player::Player()
 {
     isDestroyed = false;
-    sprite.setOrigin(38/2, 40/2);
 }
 
 Player::~Player()
@@ -14,9 +13,9 @@ void Player::fireProjectile(sf::Texture & texture)
 {
     projVelocity[0] = 0;
     projVelocity[1] = -30;
-    Projectile* newProj = new Projectile(projVelocity, sprite.getPosition().x+12, sprite.getPosition().y, texture, 5, false);
+    Projectile* newProj = new Projectile(projVelocity, sprite.getPosition().x+15, sprite.getPosition().y, texture, 5, false);
     projList.push_front(*newProj);
-    Projectile* newProj2 = new Projectile(projVelocity, sprite.getPosition().x-12, sprite.getPosition().y, texture, 5, false);
+    Projectile* newProj2 = new Projectile(projVelocity, sprite.getPosition().x-15, sprite.getPosition().y, texture, 5, false);
     projList.push_front(*newProj2);
 }
 
@@ -100,5 +99,6 @@ void Player::loseLife()
 void Player::revive()
 {
     isDestroyed = false;
+    sprite.setOrigin(sprite.getLocalBounds().width/2,(sprite.getLocalBounds().height/2));
 }
 

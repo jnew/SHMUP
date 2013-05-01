@@ -41,14 +41,19 @@ private:
   static sf::RenderWindow mainWindow;
   static sf::View View;
   static Player player1;
-  static Background background;
+  static Background background0;
+  static Background background1;
+  static Background background2;
+  static Background background3;
   static Scoreboard scoreboard;
   static std::list<Enemy> enemyList;
   static sf::Clock frameClock;
   static sf::Sound sounds[5];
   static sf::Music music[2];
   static sf::Texture textures[2];
-  static float bgMove;
+  static float bgMove1;
+  static float bgMove2;
+  static float bgMove3;
   static sf::Font uni05;
 };
 
