@@ -15,8 +15,6 @@
 # Compiled dependencies
 *.d
 
-Game
-
 *.pro
 *.pro.*
 *.mp3

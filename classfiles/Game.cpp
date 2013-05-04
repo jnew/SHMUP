@@ -23,7 +23,7 @@ void Game::Start(void)
   gameState = Uninitialized;
 
   //load our main font
-  uni05.loadFromFile("uni05_53.ttf");
+  uni05.loadFromFile("fonts/uni05_53.ttf");
 
   //testing optimization
   textures[0].loadFromFile("images/proj.png");
