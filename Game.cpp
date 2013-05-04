@@ -27,7 +27,7 @@ void Game::Start(void)
 
   //testing optimization
   textures[0].loadFromFile("images/proj.png");
-  textures[1].loadFromFile("images/bullet1.png");
+  textures[1].loadFromFile("images/EnemyProj.png");
 
   //load some sounds
   sf::SoundBuffer projSound;
@@ -408,7 +408,7 @@ void Game::GameLoop()
         bgMove0 = 0;
         bgMove1 = 0;
         //bgMove3 = 0;
-        player1.Load("images/PlayerDrawn.png");
+        player1.Load("images/Player.png");
         player1.SetPosition(576/2,700);
         player1.revive();
         scoreboard.updateFont(&uni05);
