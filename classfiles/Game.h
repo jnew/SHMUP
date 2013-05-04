@@ -50,7 +50,7 @@ private:
   static sf::Clock frameClock;
   static sf::Sound sounds[5];
   static sf::Music music[2];
-  static sf::Texture textures[2];
+  static sf::Texture textures[3];
   static float bgMove0;
   static float bgMove1;
   static float bgMove2;
