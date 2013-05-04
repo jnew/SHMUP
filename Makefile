@@ -12,4 +12,4 @@ Game: $(objects)
 -include $(objects:.o=.d)
 
 clean:
-	rm -f *.o *.d
+	rm -f *.o *.d classfiles/*.o classfiles/*.d
