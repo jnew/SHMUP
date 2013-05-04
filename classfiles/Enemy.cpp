@@ -116,11 +116,11 @@ void Enemy::pattern0(sf::Texture textureList[])
 
 void Enemy::pattern1(sf::Texture textureList[])
 {
-    if(fireClock >= 40 && !isDestroyed)
+    if(fireClock >= 60 && !isDestroyed)
     {
         float projVelocity[2];
         float magnitude = 3;
-        angle = 0;
+        angle = 3.14159/2;
         for(int i = 0; i < 10; i++)
         {
             projVelocity[0] = sin(angle)*magnitude;

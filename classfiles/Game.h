@@ -57,6 +57,7 @@ private:
   static float bgMove1;
   static float bgMove2;
   static sf::Font uni05;
+  static sf::Font datagoth;
 };
 
 

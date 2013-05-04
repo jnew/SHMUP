@@ -3,11 +3,11 @@
 Scoreboard::Scoreboard()
 {
     //576 by 768 so board is 448 by 768
-    score.setPosition(586, 10);
-    lives.setPosition(636, 110);
-    power.setPosition(586, 40);
-    lifeSprite.setPosition(586, 100);
-    targetHP.setPosition(586, 160);
+    score.setPosition(596, 10);
+    lives.setPosition(646, 105);
+    power.setPosition(596, 40);
+    lifeSprite.setPosition(596, 100);
+    targetHP.setPosition(596, 160);
     healthBar.setPosition(10,10);
     healthBar2.setPosition(10,10);
     healthBar3.setPosition(10,10);
@@ -17,6 +17,10 @@ Scoreboard::Scoreboard()
     healthBar.setFillColor(sf::Color::Green);
     healthBar2.setFillColor(sf::Color::Yellow);
     healthBar3.setFillColor(sf::Color::Red);
+
+    totalScore = 0;
+    sprintf(scoreString,"Score: %06d", totalScore);
+    this->score.setString(scoreString);
 }
 
 Scoreboard::Scoreboard(unsigned int score, unsigned int lives, unsigned int power)
@@ -59,7 +63,7 @@ void Scoreboard::drawScoreboard(sf::RenderWindow &window, sf::Sprite player)
     window.draw(lifeSprite);
     window.draw(lives);
     window.draw(power);
-    window.draw(targetHP);
+    //window.draw(targetHP);
     window.draw(healthBar3);
     window.draw(healthBar2);
     window.draw(healthBar);
@@ -79,11 +83,17 @@ void Scoreboard::updatePower(unsigned int power)
     this->power.setString(powerString);
 }
 
-void Scoreboard::updateScore(unsigned int score)
+bool Scoreboard::updateScore(unsigned int score)
 {
-    totalScore += score;
-    sprintf(scoreString,"Score: %06d", totalScore);
-    this->score.setString(scoreString);
+    if(score > 0)
+    {
+        totalScore += score;
+        sprintf(scoreString,"Score: %06d", totalScore);
+        this->score.setString(scoreString);
+        return 1;
+    }
+    else
+        return 0;
 }
 
 void Scoreboard::updateTargetHP(unsigned int newHealth, unsigned int initHealth)

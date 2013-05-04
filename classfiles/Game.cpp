@@ -29,15 +29,16 @@ void Game::Start(void)
   //mainWindow.setVerticalSyncEnabled(true);
   gameState = Uninitialized;
 
-  //load our main font
+  //load our main fonts
   uni05.loadFromFile("fonts/uni05_53.ttf");
+  datagoth.loadFromFile("fonts/datagoth.otf");
 
-  //testing optimization
+  //load projectile textures
   textures[0].loadFromFile("images/proj.png");
   textures[1].loadFromFile("images/EnemyProj.png");
   textures[2].loadFromFile("images/EnemyProjSmall.png");
 
-  //load some sounds
+  //load sounds
   sf::SoundBuffer projSound;
   projSound.loadFromFile("sounds/se_plst00.wav");
   sounds[0].setBuffer(projSound);
@@ -73,56 +74,34 @@ void Game::Start(void)
     mainWindow.close();
 }
 
-//shows splash screen (BLOCKING)
+//show splash screen (BLOCKING)
 bool Game::ShowSplashScreen()
 {
 
     sf::String titleText("Ace SPACE Pilot");
-    sf::Text title(titleText, uni05);
-    title.setFont(uni05);
-    title.setCharacterSize(40);
+    sf::Text title(titleText, datagoth);
+    title.setCharacterSize(50);
     title.setStyle(sf::Text::Bold);
     title.setColor(sf::Color::White);
-    title.setPosition(288-(title.getGlobalBounds().width/2), 300);
+    title.setPosition(288-(title.getGlobalBounds().width/2), 280);
 
     sf::String prompt("Press Enter to Begin");
-    sf::Text text(prompt, uni05);
-    text.setFont(uni05);
+    sf::Text text(prompt, datagoth);
     text.setCharacterSize(24);
     text.setColor(sf::Color::White);
-    text.setPosition(288-text.getGlobalBounds().width/2, 728);
+    text.setPosition(288-text.getGlobalBounds().width/2, 725);
 
     sf::String fpsString("\nESC to Quit\nP to Pause\nSPACE to Fire\nWASD to Move");
-    sf::Text text2(fpsString, uni05);
-    text2.setCharacterSize(18);
-    //text.setStyle(sf::Text::Bold);
-    text2.setFont(uni05);
-    text2.setColor(sf::Color::Yellow);
-    text2.setPosition(586, 650);
+    sf::Text text2(fpsString, datagoth);
+    text2.setCharacterSize(20);
+    text2.setColor(sf::Color::White);
+    text2.setPosition(596, 650);
 
     music[0].openFromFile("sounds/menu_bgm.ogg");
     music[0].play();
 
     music[1].openFromFile("sounds/stage_bgm.ogg");
     music[1].setVolume(30);
-
-
-	//intial wave to seed the enemy list
-	Enemy* newEnemy2 = new Enemy(2, 0, -100);
-	newEnemy2->setDestination(200, 300);
-	enemyList.push_front(*newEnemy2);
-
-	Enemy* newEnemy3 = new Enemy(2, 576, -100);
-	newEnemy3->setDestination(350, 300);
-	enemyList.push_front(*newEnemy3);
-
-	Enemy* newEnemy4 = new Enemy(2, 60, -100);
-	newEnemy4->setDestination(200, 300);
-	enemyList.push_front(*newEnemy4);
-
-	Enemy* newEnemy5 = new Enemy(2, 536, -100);
-	newEnemy5->setDestination(350, 300);
-	enemyList.push_front(*newEnemy5);
 
     sf::Event event;
     while(true)
@@ -158,6 +137,13 @@ bool Game::ShowSplashScreen()
              return 0;
            }
         }
+
+        //update paralaxed backgrounds
+        if(bgMove1 > (2500-768))
+            bgMove1 = 0;
+        bgMove1 += 2;
+        background1.sprite.setTextureRect(sf::Rect<int>(0,(2500-768)-bgMove1,576,768));
+
         mainWindow.draw(wholeArea);
         mainWindow.draw(spawnArea);
         background0.Draw(mainWindow);
@@ -168,6 +154,7 @@ bool Game::ShowSplashScreen()
         mainWindow.draw(title);
         mainWindow.draw(text);
         mainWindow.draw(text2);
+        scoreboard.drawScoreboard(mainWindow, player1.sprite);
         mainWindow.display();
     }
 }
@@ -248,7 +235,7 @@ void Game::UpdateEnemies()
     }        
 }
 
-//delete anything flagged for deletion
+//delete anything flagged for deletion and spawn next wave if necessary
 void Game::CleanUp()
 {
     player1.cleanProjectiles();
@@ -263,11 +250,8 @@ void Game::CleanUp()
     {
         if((*i).destroyCheck() && !(*i).screenCheck())
         {
-            int temp;
-            temp = (*i).getScore();
-            if(temp > 0)
+            if(scoreboard.updateScore((*i).getScore()))
                 sounds[5].play();
-            scoreboard.updateScore(temp);
         }
         if((*i).destroyCheck() && (*i).projList.empty())
         {
@@ -281,51 +265,50 @@ void Game::CleanUp()
     bool newWave = 0;
     for(i = enemyList.begin(); i != enemyList.end(); i++)
     {
-	if(!(*i).destroyCheck() )
-	{
-		newWave = 0;
-		break;
-	}
-	else
-		newWave = 1;
+        if(!(*i).destroyCheck() )
+        {
+            newWave = 0;
+            break;
+        }
+        else
+            newWave = 1;
     }
 
     if(newWave && gameState == Playing)
     {
-	Enemy* newEnemy = new Enemy(3, 576/2, -100);
-    newEnemy->setDestination(576/2, 100);
-	enemyList.push_front(*newEnemy);
+        Enemy* newEnemy = new Enemy(3, 576/2, -100);
+        newEnemy->setDestination(576/2, 100);
+        enemyList.push_front(*newEnemy);
 
-	Enemy* newEnemy2 = new Enemy(2, 0, -100);
-	newEnemy2->setDestination(200, 300);
-	enemyList.push_front(*newEnemy2);
+        Enemy* newEnemy2 = new Enemy(2, 0, -100);
+        newEnemy2->setDestination(200, 300);
+        enemyList.push_front(*newEnemy2);
 
-    Enemy* newEnemy3 = new Enemy(4, 576, -100);
-    newEnemy3->setDestination(450, 200);
-	enemyList.push_front(*newEnemy3);
+        Enemy* newEnemy3 = new Enemy(4, 576, -100);
+        newEnemy3->setDestination(450, 200);
+        enemyList.push_front(*newEnemy3);
 
-    Enemy* newEnemy4 = new Enemy(4, 60, -100);
-    newEnemy4->setDestination(100, 200);
-	enemyList.push_front(*newEnemy4);
+        Enemy* newEnemy4 = new Enemy(4, 60, -100);
+        newEnemy4->setDestination(100, 200);
+        enemyList.push_front(*newEnemy4);
 
-	Enemy* newEnemy5 = new Enemy(2, 536, -100);
-    newEnemy5->setDestination(350, 300);
-	enemyList.push_front(*newEnemy5);
+        Enemy* newEnemy5 = new Enemy(2, 536, -100);
+        newEnemy5->setDestination(350, 300);
+        enemyList.push_front(*newEnemy5);
 
-	Enemy* newEnemy6 = new Enemy(1, 600, 100);
-	newEnemy6->setDestination(-500, 400);
-	enemyList.push_front(*newEnemy6);
+        Enemy* newEnemy6 = new Enemy(1, 600, 100);
+        newEnemy6->setDestination(-500, 400);
+        enemyList.push_front(*newEnemy6);
 
-	Enemy* newEnemy7 = new Enemy(1, 675, 100);
-	newEnemy7->setDestination(-500, 400);
-	enemyList.push_front(*newEnemy7);
+        Enemy* newEnemy7 = new Enemy(1, 675, 100);
+        newEnemy7->setDestination(-500, 400);
+        enemyList.push_front(*newEnemy7);
 
-	Enemy* newEnemy8 = new Enemy(1, 750, 100);
-	newEnemy8->setDestination(-500, 400);
-	enemyList.push_front(*newEnemy8);
+        Enemy* newEnemy8 = new Enemy(1, 750, 100);
+        newEnemy8->setDestination(-500, 400);
+        enemyList.push_front(*newEnemy8);
     }
 }
-
 
 //draw projectiles
 void Game::DrawProj()
@@ -382,9 +365,9 @@ void Game::GameLoop()
         //broken fullscreen stuff, do not touch
         else if(currentEvent.type == (sf::Event::KeyPressed) && currentEvent.key.code == (sf::Keyboard::F))
         {
-//            mainWindow.close();
-//            std::vector<sf::VideoMode> FullscreenModes = sf::VideoMode::getFullscreenModes();
-//            mainWindow.create(FullscreenModes[0],"SHMUP Super Alpha", sf::Style::Fullscreen);
+            //mainWindow.close();
+            //std::vector<sf::VideoMode> FullscreenModes = sf::VideoMode::getFullscreenModes();
+            //mainWindow.create(FullscreenModes[0],"SHMUP Super Alpha", sf::Style::Fullscreen);
         }
 
         switch(gameState)
@@ -437,25 +420,22 @@ void Game::GameLoop()
     case Uninitialized:
     {
         mainWindow.clear();
+
         background0.Load("images/acespacebg0.png");
         background1.Load("images/acespacebg1.png");
-        //background2.Load("images/background2.png");
-        //background3.Load("images/background3.png");
         background0.sprite.setTextureRect(sf::Rect<int>(0,(2500-768),576,768));
         background1.sprite.setTextureRect(sf::Rect<int>(0,(2500-768),576,768));
-        //background2.sprite.setTextureRect(sf::Rect<int>(0,(2000-768),576,768));
-        //background3.sprite.setTextureRect(sf::Rect<int>(0,(2000-768),576,768));
         bgMove0 = 0;
         bgMove1 = 0;
-        //bgMove3 = 0;
+
         player1.Load("images/Player.png");
         player1.SetPosition(576/2,700);
         player1.revive();
-        scoreboard.updateFont(&uni05);
-        scoreboard.updateLives(1);
+
         scoreboard.updatePower(5);
-        scoreboard.updateScore(000000);
-        scoreboard.updateTargetHP(0,0);
+
+        scoreboard.updateFont(&datagoth);
+        scoreboard.clear();
     }
     case ShowingSplash:
     {
@@ -464,6 +444,29 @@ void Game::GameLoop()
         else
         {
             gameState = Playing;
+
+            scoreboard.updateLives(1);
+            scoreboard.updatePower(5);
+            scoreboard.updateScore(000000);
+            scoreboard.updateTargetHP(0,0);
+
+            //intial wave to seed the enemy list
+            Enemy* newEnemy2 = new Enemy(2, 0, -100);
+            newEnemy2->setDestination(200, 300);
+            enemyList.push_front(*newEnemy2);
+
+            Enemy* newEnemy3 = new Enemy(2, 576, -100);
+            newEnemy3->setDestination(350, 300);
+            enemyList.push_front(*newEnemy3);
+
+            Enemy* newEnemy4 = new Enemy(2, 60, -100);
+            newEnemy4->setDestination(200, 300);
+            enemyList.push_front(*newEnemy4);
+
+            Enemy* newEnemy5 = new Enemy(2, 536, -100);
+            newEnemy5->setDestination(350, 300);
+            enemyList.push_front(*newEnemy5);
+
             frameClock.restart();
         }
         break;
@@ -483,23 +486,23 @@ void Game::GameLoop()
             gameState = GameOver;
             break;
         }
+
         UpdateProj();
         UpdateEnemies();
-        if(bgMove1 > (2500-768))
-            bgMove1 = 0;
+
+        //update paralaxed backgrounds
         if(bgMove0 > (2500-768))
             bgMove0 = 0;
-//        if(bgMove3 > (2000-768))
-//            bgMove3 = 0;
-        bgMove0 += 50*frameTime;
-        bgMove1 += 150*frameTime;
-//        bgMove3 += 150*frameTime;
+        bgMove0 += 1;
         background0.sprite.setTextureRect(sf::Rect<int>(0,(2500-768)-bgMove0,576,768));
-        background1.sprite.setTextureRect(sf::Rect<int>(0,(2500-768)-bgMove1,576,768));
-//        background3.sprite.setTextureRect(sf::Rect<int>(0,(2000-768)-bgMove3,576,768));
         break;
     }
     }
+
+    if(bgMove1 > (2500-768))
+        bgMove1 = 0;
+    bgMove1 += 2;
+    background1.sprite.setTextureRect(sf::Rect<int>(0,(2500-768)-bgMove1,576,768));
 
     //clean up sprites to be deleted
     CleanUp();
@@ -508,43 +511,53 @@ void Game::GameLoop()
     mainWindow.clear(sf::Color(0,0,0));
     mainWindow.draw(wholeArea);
     background0.Draw(mainWindow);
-    //background2.Draw(mainWindow);
+
     char fps[60];
     sprintf(fps,"%.2f\nESC to Quit\nP to Pause\nSPACE to Fire\nWASD to Move",(float(1)/frameTime));
     sf::String fpsString(fps);
-    sf::Text text(fpsString, uni05);
-    text.setCharacterSize(18);
-    //text.setStyle(sf::Text::Bold);
-    text.setFont(uni05);
-    text.setColor(sf::Color::Yellow);
-    text.setPosition(586, 650);
+    sf::Text text(fpsString, datagoth);
+    text.setCharacterSize(20);
+    text.setColor(sf::Color::White);
+    text.setPosition(596, 650);
+
     if(gameState == GameOver)
     {
         sf::String gameOver("GAME OVER");
-        sf::Text endingMessage(gameOver, uni05);
-        endingMessage.setCharacterSize(40);
-        endingMessage.setFont(uni05);
+        sf::Text endingMessage(gameOver, datagoth);
+        endingMessage.setCharacterSize(50);
         endingMessage.setStyle(sf::Text::Bold);
         endingMessage.setColor(sf::Color::Red);
         endingMessage.setPosition(288-(endingMessage.getGlobalBounds().width/2), 300);
 
+        sf::String authors("Developed by:\nJohn New\nDevon Gardner\nJon Forcht\nDanny Krulick");
+        sf::Text credits(authors, datagoth);
+        credits.setCharacterSize(20);
+        credits.setColor(sf::Color::White);
+        credits.setPosition(288-(credits.getGlobalBounds().width/2), 500);
+        mainWindow.draw(credits);
         mainWindow.draw(endingMessage);
     }
+
     DrawProj();
     DrawEnemies();
+
     if(player1.destroyCheck() == false)
         player1.Draw(mainWindow);
+
     background1.Draw(mainWindow);
+
     mainWindow.draw(spawnArea);
     mainWindow.draw(rightBound);
     mainWindow.draw(leftBound);
     mainWindow.draw(bottomBound);
     mainWindow.draw(text);
     scoreboard.drawScoreboard(mainWindow, player1.sprite);
+
+    //finally, render the frame
     mainWindow.display();
 }
 
-
+//static object and variable construction
 Game::GameState Game::gameState;
 sf::RenderWindow Game::mainWindow;
 Player Game::player1;
@@ -568,4 +581,5 @@ float Game::bgMove0;
 float Game::bgMove1;
 float Game::bgMove2;
 sf::Font Game::uni05;
+sf::Font Game::datagoth;
 

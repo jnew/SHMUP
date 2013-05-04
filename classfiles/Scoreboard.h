@@ -12,7 +12,7 @@ public:
     Scoreboard();
     Scoreboard(unsigned int, unsigned int, unsigned int);
     ~Scoreboard();
-    void updateScore(unsigned int);
+    bool updateScore(unsigned int);
     void updateLives(unsigned int);
     void updatePower(unsigned int);
     void updateTargetHP(unsigned int, unsigned int);
