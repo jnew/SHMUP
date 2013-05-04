@@ -12,17 +12,17 @@ void Game::Start(void)
   mainWindow.setKeyRepeatEnabled(false);
   mainWindow.setFramerateLimit(60);
   mainWindow.setMouseCursorVisible(false);
-  rightBound.setSize(sf::Vector2f(200,768));
+  rightBound.setSize(sf::Vector2f(400,768));
   rightBound.setFillColor(sf::Color::Black);
   rightBound.setPosition(576,0);
-  leftBound.setSize(sf::Vector2f(200,768));
+  leftBound.setSize(sf::Vector2f(400,768));
   leftBound.setFillColor(sf::Color::Black);
   leftBound.setPosition(-400,0);
   bottomBound.setSize(sf::Vector2f(576,400));
   bottomBound.setFillColor(sf::Color::Black);
   bottomBound.setPosition(0,768);
-  spawnArea.setSize(sf::Vector2f(576,400));
-  spawnArea.setPosition(0,-400);
+  spawnArea.setSize(sf::Vector2f(676,400));
+  spawnArea.setPosition(-50,-400);
   spawnArea.setFillColor(sf::Color::Black);
   wholeArea.setSize(sf::Vector2f(1024,768));
   wholeArea.setFillColor(sf::Color::Black);
@@ -54,10 +54,15 @@ void Game::Start(void)
   sf::SoundBuffer hitSound;
   hitSound.loadFromFile("sounds/se_damage00.wav");
   sounds[3].setBuffer(hitSound);
+  sounds[3].setVolume(20);
 
   sf::SoundBuffer endSound;
   endSound.loadFromFile("sounds/se_playerdead.wav");
   sounds[4].setBuffer(endSound);
+
+  sf::SoundBuffer killSound;
+  killSound.loadFromFile("sounds/destroy.ogg");
+  sounds[5].setBuffer(killSound);
 
   while(gameState != Exiting)
   {
@@ -239,7 +244,13 @@ void Game::CleanUp()
     while(i != enemyList.end())
     {
         if((*i).destroyCheck() && !(*i).screenCheck())
-            scoreboard.updateScore((*i).getScore());
+        {
+            int temp;
+            temp = (*i).getScore();
+            if(temp > 0)
+                sounds[5].play();
+            scoreboard.updateScore(temp);
+        }
         if((*i).destroyCheck() && (*i).projList.empty())
         {
             enemyList.erase(i);
@@ -255,19 +266,19 @@ void Game::CleanUp()
         newEnemy->setDestination(576/2, 1000);
         enemyList.push_front(*newEnemy);
 
-        Enemy* newEnemy2 = new Enemy(2, 0, -100);
+        Enemy* newEnemy2 = new Enemy(2, 20, -100);
         newEnemy2->setDestination(200, 300);
         enemyList.push_front(*newEnemy2);
 
-        Enemy* newEnemy3 = new Enemy(2, 576, -100);
+        Enemy* newEnemy3 = new Enemy(2, 556, -100);
         newEnemy3->setDestination(350, 300);
         enemyList.push_front(*newEnemy3);
 
-        Enemy* newEnemy4 = new Enemy(2, 60, -100);
+        Enemy* newEnemy4 = new Enemy(2, 80, -100);
         newEnemy4->setDestination(200, 300);
         enemyList.push_front(*newEnemy4);
 
-        Enemy* newEnemy5 = new Enemy(2, 536, -100);
+        Enemy* newEnemy5 = new Enemy(2, 516, -100);
         newEnemy5->setDestination(350, 300);
         enemyList.push_front(*newEnemy5);
 
@@ -519,7 +530,7 @@ sf::RectangleShape Game::wholeArea;
 sf::RectangleShape Game::leftBound;
 sf::RectangleShape Game::bottomBound;
 sf::View Game::View(sf::FloatRect(0, 0, 1024, 768));
-sf::Sound Game::sounds[5];
+sf::Sound Game::sounds[6];
 sf::Music Game::music[2];
 sf::Texture Game::textures[3];
 float Game::bgMove0;

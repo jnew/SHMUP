@@ -50,7 +50,7 @@ private:
   static Scoreboard scoreboard;
   static std::list<Enemy> enemyList;
   static sf::Clock frameClock;
-  static sf::Sound sounds[5];
+  static sf::Sound sounds[6];
   static sf::Music music[2];
   static sf::Texture textures[3];
   static float bgMove0;

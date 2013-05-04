@@ -40,6 +40,7 @@ public:
     bool destroyCheck();
     bool screenCheck();
     std::list<Projectile> projList;
+
 private:
     //for patterns
     float angle;

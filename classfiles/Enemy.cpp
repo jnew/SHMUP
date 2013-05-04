@@ -14,10 +14,10 @@ Enemy::Enemy(int enemyType, float x, float y)
     SetPosition(x, y);
     switch(enemyType)
     {
-    case 1: //swarmer
+    case 1: //shooter
     {
-        Load("images/Seeker.png");
-        center[0] = 29/2;
+        Load("images/Shooter.png");
+        center[0] = 50/2;
         center[1] = 48;
         hitPoints = 100;
         pixelsPerFrame = 5;
@@ -39,8 +39,8 @@ Enemy::Enemy(int enemyType, float x, float y)
     case 3: //boss
     {
         Load("images/Boss.png");
-        center[0] = 144/2;
-        center[1] = 101;
+        center[0] = 200/2;
+        center[1] = 80/2;
         hitPoints = 1000;
         pixelsPerFrame = 2;
         score = 500;
