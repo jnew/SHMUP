@@ -87,6 +87,24 @@ bool Game::ShowSplashScreen()
     music[1].openFromFile("sounds/stage_bgm.ogg");
     music[1].setVolume(30);
 
+
+	//intial wave to seed the enemy list
+	Enemy* newEnemy2 = new Enemy(2, 0, -100);
+	newEnemy2->setDestination(200, 300);
+	enemyList.push_front(*newEnemy2);
+
+	Enemy* newEnemy3 = new Enemy(2, 576, -100);
+	newEnemy3->setDestination(350, 300);
+	enemyList.push_front(*newEnemy3);
+
+	Enemy* newEnemy4 = new Enemy(2, 60, -100);
+	newEnemy4->setDestination(200, 300);
+	enemyList.push_front(*newEnemy4);
+
+	Enemy* newEnemy5 = new Enemy(2, 536, -100);
+	newEnemy5->setDestination(350, 300);
+	enemyList.push_front(*newEnemy5);
+
     sf::Event event;
     while(true)
     {
@@ -232,41 +250,54 @@ void Game::CleanUp()
             i++;
     }
 
-    if(enemyList.empty() && gameState == Playing)
+    bool newWave = 0;
+    for(i = enemyList.begin(); i != enemyList.end(); i++)
     {
-        Enemy* newEnemy = new Enemy(3, 576/2, -100);
-        newEnemy->setDestination(576/2, 1000);
-        enemyList.push_front(*newEnemy);
+	if(!(*i).destroyCheck() )
+	{
+		newWave = 0;
+		break;
+	}
+	else
+		newWave = 1;
+    }
 
-        Enemy* newEnemy2 = new Enemy(2, 0, -100);
-        newEnemy2->setDestination(200, 300);
-        enemyList.push_front(*newEnemy2);
+    if(newWave && gameState == Playing)
+    {
+	Enemy* newEnemy = new Enemy(3, 576/2, -100);
+	newEnemy->setDestination(576/2, 1000);
+	enemyList.push_front(*newEnemy);
 
-        Enemy* newEnemy3 = new Enemy(2, 576, -100);
-        newEnemy3->setDestination(350, 300);
-        enemyList.push_front(*newEnemy3);
+	Enemy* newEnemy2 = new Enemy(2, 0, -100);
+	newEnemy2->setDestination(200, 300);
+	enemyList.push_front(*newEnemy2);
 
-        Enemy* newEnemy4 = new Enemy(2, 60, -100);
-        newEnemy4->setDestination(200, 300);
-        enemyList.push_front(*newEnemy4);
+	Enemy* newEnemy3 = new Enemy(2, 576, -100);
+	newEnemy3->setDestination(350, 300);
+	enemyList.push_front(*newEnemy3);
 
-        Enemy* newEnemy5 = new Enemy(2, 536, -100);
-        newEnemy5->setDestination(350, 300);
-        enemyList.push_front(*newEnemy5);
+	Enemy* newEnemy4 = new Enemy(2, 60, -100);
+	newEnemy4->setDestination(200, 300);
+	enemyList.push_front(*newEnemy4);
 
-        Enemy* newEnemy6 = new Enemy(1, 600, 100);
-        newEnemy6->setDestination(-500, 400);
-        enemyList.push_front(*newEnemy6);
+	Enemy* newEnemy5 = new Enemy(2, 536, -100);
+	newEnemy5->setDestination(350, 300);
+	enemyList.push_front(*newEnemy5);
 
-        Enemy* newEnemy7 = new Enemy(1, 675, 100);
-        newEnemy7->setDestination(-500, 400);
-        enemyList.push_front(*newEnemy7);
+	Enemy* newEnemy6 = new Enemy(1, 600, 100);
+	newEnemy6->setDestination(-500, 400);
+	enemyList.push_front(*newEnemy6);
 
-        Enemy* newEnemy8 = new Enemy(1, 750, 100);
-        newEnemy8->setDestination(-500, 400);
-        enemyList.push_front(*newEnemy8);
+	Enemy* newEnemy7 = new Enemy(1, 675, 100);
+	newEnemy7->setDestination(-500, 400);
+	enemyList.push_front(*newEnemy7);
+
+	Enemy* newEnemy8 = new Enemy(1, 750, 100);
+	newEnemy8->setDestination(-500, 400);
+	enemyList.push_front(*newEnemy8);
     }
 }
+
 
 //draw projectiles
 void Game::DrawProj()
