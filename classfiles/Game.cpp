@@ -509,7 +509,7 @@ void Game::GameLoop()
     mainWindow.draw(wholeArea);
     background0.Draw(mainWindow);
     //background2.Draw(mainWindow);
-    char fps[32];
+    char fps[60];
     sprintf(fps,"%.2f\nESC to Quit\nP to Pause\nSPACE to Fire\nWASD to Move",(float(1)/frameTime));
     sf::String fpsString(fps);
     sf::Text text(fpsString, uni05);
