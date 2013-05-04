@@ -21,9 +21,11 @@ class Game
 
 public:
   static void Start();
-  static sf::RectangleShape playArea;
+  static sf::RectangleShape rightBound;
   static sf::RectangleShape spawnArea;
   static sf::RectangleShape wholeArea;
+  static sf::RectangleShape leftBound;
+  static sf::RectangleShape bottomBound;
 
 private:
   static void GameLoop();

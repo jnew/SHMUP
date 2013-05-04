@@ -12,9 +12,15 @@ void Game::Start(void)
   mainWindow.setKeyRepeatEnabled(false);
   mainWindow.setFramerateLimit(60);
   mainWindow.setMouseCursorVisible(false);
-  playArea.setSize(sf::Vector2f(200,768));
-  playArea.setFillColor(sf::Color::Black);
-  playArea.setPosition(576,0);
+  rightBound.setSize(sf::Vector2f(200,768));
+  rightBound.setFillColor(sf::Color::Black);
+  rightBound.setPosition(576,0);
+  leftBound.setSize(sf::Vector2f(200,768));
+  leftBound.setFillColor(sf::Color::Black);
+  leftBound.setPosition(-400,0);
+  bottomBound.setSize(sf::Vector2f(576,400));
+  bottomBound.setFillColor(sf::Color::Black);
+  bottomBound.setPosition(0,768);
   spawnArea.setSize(sf::Vector2f(576,400));
   spawnArea.setPosition(0,-400);
   spawnArea.setFillColor(sf::Color::Black);
@@ -81,6 +87,14 @@ bool Game::ShowSplashScreen()
     text.setColor(sf::Color::White);
     text.setPosition(288-text.getGlobalBounds().width/2, 728);
 
+    sf::String fpsString("\nESC to Quit\nP to Pause\nSPACE to Fire\nWASD to Move");
+    sf::Text text2(fpsString, uni05);
+    text2.setCharacterSize(18);
+    //text.setStyle(sf::Text::Bold);
+    text2.setFont(uni05);
+    text2.setColor(sf::Color::Yellow);
+    text2.setPosition(586, 650);
+
     music[0].openFromFile("sounds/menu_bgm.ogg");
     music[0].play();
 
@@ -122,12 +136,15 @@ bool Game::ShowSplashScreen()
            }
         }
         mainWindow.draw(wholeArea);
-        mainWindow.draw(playArea);
         mainWindow.draw(spawnArea);
         background0.Draw(mainWindow);
         background1.Draw(mainWindow);
+        mainWindow.draw(rightBound);
+        mainWindow.draw(leftBound);
+        mainWindow.draw(bottomBound);
         mainWindow.draw(title);
         mainWindow.draw(text);
+        mainWindow.draw(text2);
         mainWindow.display();
     }
 }
@@ -448,19 +465,17 @@ void Game::GameLoop()
     //draw game
     mainWindow.clear(sf::Color(0,0,0));
     mainWindow.draw(wholeArea);
-    mainWindow.draw(playArea);
     background0.Draw(mainWindow);
     //background2.Draw(mainWindow);
     char fps[32];
-    sprintf(fps,"%.2f\nESC to Quit\nP to Pause",(float(1)/frameTime));
+    sprintf(fps,"%.2f\nESC to Quit\nP to Pause\nSPACE to Fire\nWASD to Move",(float(1)/frameTime));
     sf::String fpsString(fps);
     sf::Text text(fpsString, uni05);
     text.setCharacterSize(18);
     //text.setStyle(sf::Text::Bold);
     text.setFont(uni05);
     text.setColor(sf::Color::Yellow);
-    text.setPosition(586, 700);
-    mainWindow.draw(text);
+    text.setPosition(586, 650);
     if(gameState == GameOver)
     {
         sf::String gameOver("GAME OVER");
@@ -479,7 +494,10 @@ void Game::GameLoop()
         player1.Draw(mainWindow);
     background1.Draw(mainWindow);
     mainWindow.draw(spawnArea);
-    mainWindow.draw(playArea);
+    mainWindow.draw(rightBound);
+    mainWindow.draw(leftBound);
+    mainWindow.draw(bottomBound);
+    mainWindow.draw(text);
     scoreboard.drawScoreboard(mainWindow, player1.sprite);
     mainWindow.display();
 }
@@ -495,9 +513,11 @@ Background Game::background3;
 Scoreboard Game::scoreboard;
 std::list<Enemy> Game::enemyList;
 sf::Clock Game::frameClock;
-sf::RectangleShape Game::playArea;
+sf::RectangleShape Game::rightBound;
 sf::RectangleShape Game::spawnArea;
 sf::RectangleShape Game::wholeArea;
+sf::RectangleShape Game::leftBound;
+sf::RectangleShape Game::bottomBound;
 sf::View Game::View(sf::FloatRect(0, 0, 1024, 768));
 sf::Sound Game::sounds[5];
 sf::Music Game::music[2];
