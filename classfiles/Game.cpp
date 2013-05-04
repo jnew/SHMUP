@@ -74,14 +74,6 @@ bool Game::ShowSplashScreen()
     title.setColor(sf::Color::White);
     title.setPosition(288-(title.getGlobalBounds().width/2), 300);
 
-    mainWindow.draw(wholeArea);
-    mainWindow.draw(playArea);
-    mainWindow.draw(spawnArea);
-    background0.Draw(mainWindow);
-    background1.Draw(mainWindow);
-    mainWindow.draw(title);
-    mainWindow.display();
-
     sf::String prompt("Press Enter to Begin");
     sf::Text text(prompt, uni05);
     text.setFont(uni05);
@@ -96,16 +88,8 @@ bool Game::ShowSplashScreen()
     music[1].setVolume(30);
 
     sf::Event event;
-    bool blinkCounter = 1;
-    int spriteCount = 0;
-    int start;
     while(true)
     {
-        if(blinkCounter)
-        {
-            start = clock();
-            blinkCounter = 0;
-        }
         while(mainWindow.pollEvent(event))
         {
            if(event.type == sf::Event::Resized)
@@ -137,23 +121,14 @@ bool Game::ShowSplashScreen()
              return 0;
            }
         }
-        if(((clock()-start)/(double) CLOCKS_PER_SEC) >= 0.5)
-        {
-            mainWindow.clear();
-            mainWindow.draw(wholeArea);
-            mainWindow.draw(playArea);
-            mainWindow.draw(spawnArea);
-            background0.Draw(mainWindow);
-            background1.Draw(mainWindow);
-            mainWindow.draw(title);
-            if(spriteCount % 2 == 0)
-            {
-                mainWindow.draw(text);
-            }
-            mainWindow.display();
-            spriteCount++;
-            blinkCounter = 1;
-        }
+        mainWindow.draw(wholeArea);
+        mainWindow.draw(playArea);
+        mainWindow.draw(spawnArea);
+        background0.Draw(mainWindow);
+        background1.Draw(mainWindow);
+        mainWindow.draw(title);
+        mainWindow.draw(text);
+        mainWindow.display();
     }
 }
 
