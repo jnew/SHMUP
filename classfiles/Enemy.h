@@ -21,9 +21,9 @@ public:
     void drawProjectiles(sf::RenderWindow &);
     bool checkProjCollision(Player &);
 
+    void pattern0(sf::Texture[]);
     void pattern1(sf::Texture[]);
     void pattern2(sf::Texture[]);
-    void pattern3(sf::Texture[]);
 
     int getScore();
     int getType();
@@ -38,6 +38,7 @@ public:
     void rotate(Player &);
     bool fire();
     bool destroyCheck();
+    bool screenCheck();
     std::list<Projectile> projList;
 private:
     //for patterns
@@ -47,6 +48,7 @@ private:
     //for seekers
     bool popped;
     bool isScored;
+    bool offScreen;
 
     bool fires;
     bool isDestroyed;

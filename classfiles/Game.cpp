@@ -12,8 +12,9 @@ void Game::Start(void)
   mainWindow.setKeyRepeatEnabled(false);
   mainWindow.setFramerateLimit(60);
   mainWindow.setMouseCursorVisible(false);
-  playArea.setSize(sf::Vector2f(576,768));
-  playArea.setFillColor(sf::Color::Blue);
+  playArea.setSize(sf::Vector2f(200,768));
+  playArea.setFillColor(sf::Color::Black);
+  playArea.setPosition(576,0);
   spawnArea.setSize(sf::Vector2f(576,400));
   spawnArea.setPosition(0,-400);
   spawnArea.setFillColor(sf::Color::Black);
@@ -28,6 +29,7 @@ void Game::Start(void)
   //testing optimization
   textures[0].loadFromFile("images/proj.png");
   textures[1].loadFromFile("images/EnemyProj.png");
+  textures[2].loadFromFile("images/EnemyProjSmall.png");
 
   //load some sounds
   sf::SoundBuffer projSound;
@@ -244,7 +246,7 @@ void Game::CleanUp()
     i = enemyList.begin();
     while(i != enemyList.end())
     {
-        if((*i).destroyCheck())
+        if((*i).destroyCheck() && !(*i).screenCheck())
             scoreboard.updateScore((*i).getScore());
         if((*i).destroyCheck() && (*i).projList.empty())
         {
@@ -258,7 +260,7 @@ void Game::CleanUp()
     if(enemyList.empty() && gameState == Playing)
     {
         Enemy* newEnemy = new Enemy(3, 576/2, -100);
-        newEnemy->setDestination(576/2, 200);
+        newEnemy->setDestination(576/2, 1000);
         enemyList.push_front(*newEnemy);
 
         Enemy* newEnemy2 = new Enemy(2, 0, -100);
@@ -277,13 +279,17 @@ void Game::CleanUp()
         newEnemy5->setDestination(350, 300);
         enemyList.push_front(*newEnemy5);
 
-        Enemy* newEnemy6 = new Enemy(1, 30, 100);
-        newEnemy6->setDestination(200, 300);
+        Enemy* newEnemy6 = new Enemy(1, 600, 100);
+        newEnemy6->setDestination(-500, 400);
         enemyList.push_front(*newEnemy6);
 
-        Enemy* newEnemy7 = new Enemy(1, 506, 100);
-        newEnemy7->setDestination(350, 300);
+        Enemy* newEnemy7 = new Enemy(1, 675, 100);
+        newEnemy7->setDestination(-500, 400);
         enemyList.push_front(*newEnemy7);
+
+        Enemy* newEnemy8 = new Enemy(1, 750, 100);
+        newEnemy8->setDestination(-500, 400);
+        enemyList.push_front(*newEnemy8);
     }
 }
 
@@ -320,7 +326,7 @@ void Game::GameLoop()
     sf::Event currentEvent;
     while(mainWindow.pollEvent(currentEvent))
     {
-        //gotta handle resize shit here
+        //gotta handle resize things here
         if(currentEvent.type == sf::Event::Resized)
         {
             //std::cerr << "resized" << std::endl;
@@ -498,6 +504,7 @@ void Game::GameLoop()
         player1.Draw(mainWindow);
     background1.Draw(mainWindow);
     mainWindow.draw(spawnArea);
+    mainWindow.draw(playArea);
     scoreboard.drawScoreboard(mainWindow, player1.sprite);
     mainWindow.display();
 }
@@ -519,7 +526,7 @@ sf::RectangleShape Game::wholeArea;
 sf::View Game::View(sf::FloatRect(0, 0, 1024, 768));
 sf::Sound Game::sounds[5];
 sf::Music Game::music[2];
-sf::Texture Game::textures[2];
+sf::Texture Game::textures[3];
 float Game::bgMove0;
 float Game::bgMove1;
 float Game::bgMove2;
