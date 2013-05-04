@@ -15,7 +15,7 @@ public:
     Enemy(int, float, float);
     ~Enemy();
 
-    void fireProjectile(sf::Texture[], int);
+    void fireProjectile(sf::Texture[]);
     void updateProjectiles();
     void cleanProjectiles();
     void drawProjectiles(sf::RenderWindow &);
@@ -58,6 +58,7 @@ private:
     int fireClock;
     int hitPoints;
     int startingHealth;
+    int patternNumber;
     float pixelsPerFrame;
     float center[2];
     float rotation;

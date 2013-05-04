@@ -14,15 +14,16 @@ Enemy::Enemy(int enemyType, float x, float y)
     SetPosition(x, y);
     switch(enemyType)
     {
-    case 1: //shooter
+    case 1: //fast shooter
     {
         Load("images/Shooter.png");
         center[0] = 50/2;
         center[1] = 48;
         hitPoints = 100;
         pixelsPerFrame = 5;
-        score = 1000;
+        score = 200;
         fires = true;
+        patternNumber = 0;
         break;
     }
     case 2: //tracker
@@ -30,8 +31,8 @@ Enemy::Enemy(int enemyType, float x, float y)
         Load("images/Seeker.png");
         center[0] = 29/2;
         center[1] = 48;
-        hitPoints = 100;
-        pixelsPerFrame = 4;
+        hitPoints = 150;
+        pixelsPerFrame = 3;
         score = 100;
         fires = false;
         break;
@@ -43,8 +44,21 @@ Enemy::Enemy(int enemyType, float x, float y)
         center[1] = 80/2;
         hitPoints = 1000;
         pixelsPerFrame = 2;
+        score = 1000;
+        fires = true;
+        patternNumber = 2;
+        break;
+    }
+    case 4: //circle shooter
+    {
+        Load("images/Shooter.png");
+        center[0] = 50/2;
+        center[1] = 48;
+        hitPoints = 200;
+        pixelsPerFrame = 2;
         score = 500;
         fires = true;
+        patternNumber = 1;
         break;
     }
     }
@@ -66,11 +80,9 @@ Enemy::~Enemy()
 
 }
 
-void Enemy::fireProjectile(sf::Texture textureList[], int patternNumber)
+void Enemy::fireProjectile(sf::Texture textureList[])
 {
-    if(enemyType == 1)
-        (this->*pattern[0])(textureList);
-    else if(fires)
+    if(fires)
         (this->*pattern[patternNumber])(textureList);
     else if(enemyType == 2 && isDestroyed && !popped)
     {
@@ -88,7 +100,7 @@ void Enemy::pattern0(sf::Texture textureList[])
     {
         float projVelocity[2];
         projVelocity[0] = -.5;
-        projVelocity[1] = 2;
+        projVelocity[1] = 4;
         for(int i = 0; i < 3; i++)
         {
         Projectile* newProj = new Projectile(projVelocity, sprite.getPosition().x, sprite.getPosition().y, textureList[1], 5, false);

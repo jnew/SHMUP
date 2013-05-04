@@ -239,7 +239,7 @@ void Game::UpdateEnemies()
 
       (*i).updatePosition();
 
-      (*i).fireProjectile(textures, 2);
+      (*i).fireProjectile(textures);
 
       if((*i).sprite.getGlobalBounds().intersects(player1.sprite.getGlobalBounds()) && !(*i).destroyCheck())
       {
@@ -293,23 +293,23 @@ void Game::CleanUp()
     if(newWave && gameState == Playing)
     {
 	Enemy* newEnemy = new Enemy(3, 576/2, -100);
-	newEnemy->setDestination(576/2, 1000);
+    newEnemy->setDestination(576/2, 100);
 	enemyList.push_front(*newEnemy);
 
 	Enemy* newEnemy2 = new Enemy(2, 0, -100);
 	newEnemy2->setDestination(200, 300);
 	enemyList.push_front(*newEnemy2);
 
-	Enemy* newEnemy3 = new Enemy(2, 576, -100);
-	newEnemy3->setDestination(350, 300);
+    Enemy* newEnemy3 = new Enemy(4, 576, -100);
+    newEnemy3->setDestination(450, 200);
 	enemyList.push_front(*newEnemy3);
 
-	Enemy* newEnemy4 = new Enemy(2, 60, -100);
-	newEnemy4->setDestination(200, 300);
+    Enemy* newEnemy4 = new Enemy(4, 60, -100);
+    newEnemy4->setDestination(100, 200);
 	enemyList.push_front(*newEnemy4);
 
 	Enemy* newEnemy5 = new Enemy(2, 536, -100);
-	newEnemy5->setDestination(350, 300);
+    newEnemy5->setDestination(350, 300);
 	enemyList.push_front(*newEnemy5);
 
 	Enemy* newEnemy6 = new Enemy(1, 600, 100);
