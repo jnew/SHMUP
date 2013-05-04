@@ -1,0 +1,8 @@
+
+Required libraries:
+openGL
+SFML-dev
+
+Both can be found in the repo of most linux distros.
+
+See storytime.txt for the game story.
