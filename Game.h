@@ -51,9 +51,9 @@ private:
   static sf::Sound sounds[5];
   static sf::Music music[2];
   static sf::Texture textures[2];
+  static float bgMove0;
   static float bgMove1;
   static float bgMove2;
-  static float bgMove3;
   static sf::Font uni05;
 };
 

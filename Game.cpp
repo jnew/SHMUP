@@ -16,7 +16,7 @@ void Game::Start(void)
   playArea.setFillColor(sf::Color::Blue);
   spawnArea.setSize(sf::Vector2f(576,400));
   spawnArea.setPosition(0,-400);
-  spawnArea.setFillColor(sf::Color::Green);
+  spawnArea.setFillColor(sf::Color::Black);
   wholeArea.setSize(sf::Vector2f(1024,768));
   wholeArea.setFillColor(sf::Color::Black);
   //mainWindow.setVerticalSyncEnabled(true);
@@ -63,17 +63,6 @@ void Game::Start(void)
 //shows splash screen (BLOCKING)
 bool Game::ShowSplashScreen()
 {
-    sf::Image image;
-    if(image.loadFromFile("images/background0.png") != true)
-    {
-        return 0;
-    }
-
-    sf::Texture texture;
-    if(texture.loadFromImage(image) != true)
-    {
-        return 0;
-    }
 
     sf::String titleText("Ace SPACE Pilot");
     sf::Text title(titleText, uni05);
@@ -83,14 +72,11 @@ bool Game::ShowSplashScreen()
     title.setColor(sf::Color::White);
     title.setPosition(288-(title.getGlobalBounds().width/2), 300);
 
-    sf::Sprite sprite(texture);
     mainWindow.draw(wholeArea);
     mainWindow.draw(playArea);
     mainWindow.draw(spawnArea);
     background0.Draw(mainWindow);
     background1.Draw(mainWindow);
-    background2.Draw(mainWindow);
-    background3.Draw(mainWindow);
     mainWindow.draw(title);
     mainWindow.display();
 
@@ -157,8 +143,6 @@ bool Game::ShowSplashScreen()
             mainWindow.draw(spawnArea);
             background0.Draw(mainWindow);
             background1.Draw(mainWindow);
-            background2.Draw(mainWindow);
-            background3.Draw(mainWindow);
             mainWindow.draw(title);
             if(spriteCount % 2 == 0)
             {
@@ -413,18 +397,18 @@ void Game::GameLoop()
     case Uninitialized:
     {
         mainWindow.clear();
-        background0.Load("images/background0.png");
-        //background1.Load("images/background1.png");
-        background2.Load("images/background2.png");
-        background3.Load("images/background3.png");
-        background0.sprite.setTextureRect(sf::Rect<int>(0,(2000-768),576,768));
-        //background1.sprite.setTextureRect(sf::Rect<int>(0,(2000-768),576,768));
-        background2.sprite.setTextureRect(sf::Rect<int>(0,(2000-768),576,768));
-        background3.sprite.setTextureRect(sf::Rect<int>(0,(2000-768),576,768));
+        background0.Load("images/acespacebg0.png");
+        background1.Load("images/acespacebg1.png");
+        //background2.Load("images/background2.png");
+        //background3.Load("images/background3.png");
+        background0.sprite.setTextureRect(sf::Rect<int>(0,(2500-768),576,768));
+        background1.sprite.setTextureRect(sf::Rect<int>(0,(2500-768),576,768));
+        //background2.sprite.setTextureRect(sf::Rect<int>(0,(2000-768),576,768));
+        //background3.sprite.setTextureRect(sf::Rect<int>(0,(2000-768),576,768));
+        bgMove0 = 0;
         bgMove1 = 0;
-        bgMove2 = 0;
-        bgMove3 = 0;
-        player1.Load("images/Player.png");
+        //bgMove3 = 0;
+        player1.Load("images/PlayerDrawn.png");
         player1.SetPosition(576/2,700);
         player1.revive();
         scoreboard.updateFont(&uni05);
@@ -461,18 +445,18 @@ void Game::GameLoop()
         }
         UpdateProj();
         UpdateEnemies();
-        if(bgMove1 > (2000-768))
+        if(bgMove1 > (2500-768))
             bgMove1 = 0;
-        if(bgMove2 > (2000-768))
-            bgMove2 = 0;
-        if(bgMove3 > (2000-768))
-            bgMove3 = 0;
-        bgMove1 += 20*frameTime;
-        bgMove2 += 50*frameTime;
-        bgMove3 += 150*frameTime;
-        //background1.sprite.setTextureRect(sf::Rect<int>(0,(2000-768)-bgMove1,576,768));
-        background2.sprite.setTextureRect(sf::Rect<int>(0,(2000-768)-bgMove2,576,768));
-        background3.sprite.setTextureRect(sf::Rect<int>(0,(2000-768)-bgMove3,576,768));
+        if(bgMove0 > (2500-768))
+            bgMove0 = 0;
+//        if(bgMove3 > (2000-768))
+//            bgMove3 = 0;
+        bgMove0 += 50*frameTime;
+        bgMove1 += 150*frameTime;
+//        bgMove3 += 150*frameTime;
+        background0.sprite.setTextureRect(sf::Rect<int>(0,(2500-768)-bgMove0,576,768));
+        background1.sprite.setTextureRect(sf::Rect<int>(0,(2500-768)-bgMove1,576,768));
+//        background3.sprite.setTextureRect(sf::Rect<int>(0,(2000-768)-bgMove3,576,768));
         break;
     }
     }
@@ -485,8 +469,7 @@ void Game::GameLoop()
     mainWindow.draw(wholeArea);
     mainWindow.draw(playArea);
     background0.Draw(mainWindow);
-    //background1.Draw(mainWindow);
-    background2.Draw(mainWindow);
+    //background2.Draw(mainWindow);
     char fps[32];
     sprintf(fps,"%.2f\nESC to Quit\nP to Pause",(float(1)/frameTime));
     sf::String fpsString(fps);
@@ -513,7 +496,7 @@ void Game::GameLoop()
     DrawEnemies();
     if(player1.destroyCheck() == false)
         player1.Draw(mainWindow);
-    background3.Draw(mainWindow);
+    background1.Draw(mainWindow);
     mainWindow.draw(spawnArea);
     scoreboard.drawScoreboard(mainWindow, player1.sprite);
     mainWindow.display();
@@ -537,8 +520,8 @@ sf::View Game::View(sf::FloatRect(0, 0, 1024, 768));
 sf::Sound Game::sounds[5];
 sf::Music Game::music[2];
 sf::Texture Game::textures[2];
+float Game::bgMove0;
 float Game::bgMove1;
 float Game::bgMove2;
-float Game::bgMove3;
 sf::Font Game::uni05;
 
