@@ -1,4 +1,4 @@
-objects := main.o Player.o Projectile.o VisibleObject.o Game.o Background.o Enemy.o Scoreboard.o
+objects := main.o classfiles/Player.o classfiles/Projectile.o classfiles/VisibleObject.o classfiles/Game.o classfiles/Background.o classfiles/Enemy.o classfiles/Scoreboard.o
 libs := -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
 
 all: Game
