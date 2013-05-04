@@ -55,7 +55,6 @@ Enemy::Enemy(int enemyType, float x, float y)
     velocity[1] = 0;
     isDestroyed = false;
     isScored = false;
-    timeSinceHit.restart();
     fireClock = 0;
     popped = 0;
     angle = 0;
@@ -203,32 +202,6 @@ bool Enemy::checkProjCollision(Player &player)
 
 void Enemy::takeDamage(int damageNumber) //returns 1 if destroyed, 0 if not
 {
-    timeSinceHit.restart();
-    switch(enemyType)
-    {
-    case 1: //dummy enemy
-    {
-        Load("images/SeekerDMG.png");
-        //std::cerr << "loaded shit" << std::endl;
-
-        break;
-    }
-    case 2: //tracker
-    {
-        Load("images/Seeker.png");
-        //std::cerr << "loaded shit" << std::endl;
-
-        break;
-    }
-    case 3: //boss
-    {
-        Load("images/BossDMG.png");
-        //std::cerr << "loaded shit" << std::endl;
-
-        break;
-    }
-    }
-
     hitPoints -= damageNumber;
     if(hitPoints <= 0)
     {
@@ -307,27 +280,6 @@ bool Enemy::fire()
 
 void Enemy::drawEnemy(sf::RenderWindow &window)
 {
-    if(timeSinceHit.getElapsedTime().asMilliseconds() > 50)
-    {
-        switch(enemyType)
-        {
-        case 1: //dummy enemy
-        {
-            Load("images/Seeker.png");
-            break;
-        }
-        case 2: //tracker
-        {
-            Load("images/Seeker.png");
-            break;
-        }
-        case 3: //boss
-        {
-            Load("images/Boss.png");
-            break;
-        }
-        }
-    }
     Draw(window);
 }
 

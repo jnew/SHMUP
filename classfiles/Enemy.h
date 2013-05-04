@@ -38,7 +38,6 @@ public:
     void rotate(Player &);
     bool fire();
     bool destroyCheck();
-    sf::Clock timeSinceHit;
     std::list<Projectile> projList;
 private:
     //for patterns
