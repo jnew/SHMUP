@@ -432,7 +432,8 @@ void Game::GameLoop()
         player1.SetPosition(576/2,700);
         player1.revive();
 
-        scoreboard.updatePower(5);
+        scoreboard.updatePower(0);
+        scoreboard.updateLives(0);
 
         scoreboard.updateFont(&datagoth);
         scoreboard.clear();
