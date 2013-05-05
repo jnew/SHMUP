@@ -10,7 +10,9 @@ Required libraries: libglew, libsfml (version 2.0, NOT 1.6), freeglut3, libopena
 These libraries are packaged in some repositories. If you are using Ubuntu or Debian, the packages that are not in your repository can be found in a PPA. If you are running Ubuntu, here are the installation instructions:
 
 sudo add-apt-repository ppa:sonkun/sfml-development
+
 sudo apt-get update
+
 sudo apt-get install freeglut3 libopenal1 libopenal-data libglew-dev libsfml libsfml-dev
 
 If you are using another distro, you may have to compile the libraries or find them elsewhere. (Arch users have all required libraries in their repos, and all are the right versions. Ubuntu's versions are outdated, hence the included PPA address.)
