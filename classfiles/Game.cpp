@@ -65,11 +65,15 @@ void Game::Start(void)
   killSound.loadFromFile("sounds/destroy.ogg");
   sounds[5].setBuffer(killSound);
 
+  if(mainWindow.setActive(true))
+{
   while(gameState != Exiting)
   {
     GameLoop();
   }
-
+}
+  
+  mainWindow.setActive(false);
   if(mainWindow.isOpen())
     mainWindow.close();
 }
@@ -434,6 +438,7 @@ void Game::GameLoop()
 
         scoreboard.updatePower(0);
         scoreboard.updateLives(0);
+        scoreboard.updateScore(-1);
 
         scoreboard.updateFont(&datagoth);
         scoreboard.clear();

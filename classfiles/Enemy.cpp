@@ -42,7 +42,7 @@ Enemy::Enemy(int enemyType, float x, float y)
         Load("images/Boss.png");
         center[0] = 200/2;
         center[1] = 80/2;
-        hitPoints = 1000;
+        hitPoints = 2500;
         pixelsPerFrame = 2;
         score = 1000;
         fires = true;

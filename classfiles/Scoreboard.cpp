@@ -83,7 +83,7 @@ void Scoreboard::updatePower(unsigned int power)
     this->power.setString(powerString);
 }
 
-bool Scoreboard::updateScore(unsigned int score)
+bool Scoreboard::updateScore(int score)
 {
     if(score > 0)
     {
@@ -91,6 +91,13 @@ bool Scoreboard::updateScore(unsigned int score)
         sprintf(scoreString,"Score: %06d", totalScore);
         this->score.setString(scoreString);
         return 1;
+    }
+    else if(score == -1)
+    {
+        totalScore = 0;
+        sprintf(scoreString,"Score: %06d", totalScore);
+        this->score.setString(scoreString);
+        return 0;
     }
     else
         return 0;
