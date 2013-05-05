@@ -85,7 +85,7 @@ bool Game::ShowSplashScreen()
     sf::String titleText("Ace SPACE Pilot");
     sf::Text title(titleText, datagoth);
     title.setCharacterSize(50);
-    title.setStyle(sf::Text::Bold);
+    //title.setStyle(sf::Text::Bold);
     title.setColor(sf::Color::White);
     title.setPosition(288-(title.getGlobalBounds().width/2), 280);
 
@@ -531,7 +531,7 @@ void Game::GameLoop()
         sf::String gameOver("GAME OVER");
         sf::Text endingMessage(gameOver, datagoth);
         endingMessage.setCharacterSize(50);
-        endingMessage.setStyle(sf::Text::Bold);
+        //endingMessage.setStyle(sf::Text::Bold);
         endingMessage.setColor(sf::Color::Red);
         endingMessage.setPosition(288-(endingMessage.getGlobalBounds().width/2), 300);
 
