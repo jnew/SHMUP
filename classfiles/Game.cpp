@@ -6,9 +6,12 @@ void Game::Start(void)
   if(gameState != Uninitialized)
     return;
 
+  //set window icon
+  icon.loadFromFile("images/Player.png");
   //make the window
-  mainWindow.create(sf::VideoMode(1024,768,32),"Ace SPACE Man"); //playing field is 576 by 768
+  mainWindow.create(sf::VideoMode(1024,768,32),"Ace SPACE Pilot"); //playing field is 576 by 768
   mainWindow.setView(View);
+  mainWindow.setIcon(40,40,icon.getPixelsPtr());
   mainWindow.setKeyRepeatEnabled(false);
   mainWindow.setFramerateLimit(60);
   mainWindow.setMouseCursorVisible(false);
@@ -26,7 +29,7 @@ void Game::Start(void)
   spawnArea.setFillColor(sf::Color::Black);
   wholeArea.setSize(sf::Vector2f(1024,768));
   wholeArea.setFillColor(sf::Color::Black);
-  //mainWindow.setVerticalSyncEnabled(true);
+  mainWindow.setVerticalSyncEnabled(true);
   gameState = Uninitialized;
 
   //load our main fonts
@@ -586,6 +589,7 @@ sf::Texture Game::textures[3];
 float Game::bgMove0;
 float Game::bgMove1;
 float Game::bgMove2;
+sf::Image Game::icon;
 sf::Font Game::uni05;
 sf::Font Game::datagoth;
 
