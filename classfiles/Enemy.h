@@ -6,6 +6,7 @@ class Player;
 #include "Projectile.h"
 #include "Player.h"
 #include <list>
+#include <iostream>
 #include <cmath>
 
 class Enemy : public VisibleObject
@@ -32,6 +33,7 @@ public:
     void takeDamage(int);
     void updatePosition();
     void setDestination(float, float);
+    void setFireDelay(int);
     void setVelocity(float, float);
     void trackPlayer(Player &);
     void drawEnemy(sf::RenderWindow &);
@@ -56,6 +58,7 @@ private:
     int enemyType;
     int score;
     int fireClock;
+    int fireDelay;
     int hitPoints;
     int startingHealth;
     int patternNumber;

@@ -70,6 +70,7 @@ Enemy::Enemy(int enemyType, float x, float y)
     isDestroyed = false;
     isScored = false;
     offScreen = false;
+    fireDelay = 0;
     fireClock = 0;
     popped = 0;
     angle = 0;
@@ -82,7 +83,7 @@ Enemy::~Enemy()
 
 void Enemy::fireProjectile(sf::Texture textureList[])
 {
-    if(fires)
+    if(fires && fire())
         (this->*pattern[patternNumber])(textureList);
     else if(enemyType == 2 && isDestroyed && !popped)
     {
@@ -266,6 +267,12 @@ void Enemy::setDestination(float x, float y)
     destination[1] = y;
 }
 
+void Enemy::setFireDelay(int delay)
+{
+    fireDelay = delay;
+    std::cerr << fireDelay << std::endl;
+}
+
 void Enemy::trackPlayer(Player &target)
 {
     float xdist;
@@ -284,14 +291,14 @@ void Enemy::trackPlayer(Player &target)
 
 bool Enemy::fire()
 {
-    if(enemyType == 3 && fireClock >= 30 && !isDestroyed)
+    if(fireDelay == 0)
     {
-        fireClock = 0;
         return true;
     }
     else
     {
-        fireClock++;
+        std::cerr << fireDelay << std::endl;
+        fireDelay--;
         return false;
     }
 }

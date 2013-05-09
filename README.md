@@ -3,7 +3,7 @@ SHMUP
 
 Title: Ace "SPACE" Pilot
 
-Info: This is basically a tech demo of a shoot-em-up engine we wrote from the ground up in C++ with libsfml. There is not much "gameplay" but we have a wave of enemies that will spawn to demo player tracking, bullet patterns, enemy movement, enemy health/health bars, our scrolling backgrounds, and scorekeeping. You can play until you lose, or get bored shooting the same enemies every wave!
+Info: This is basically a tech demo of a shoot-em-up engine we wrote from the ground up in C++ with libsfml. There is not much "gameplay" but we have waves of enemies that will spawn to demo player tracking, bullet patterns, enemy movement, enemy health/health bars, our scrolling backgrounds, and scorekeeping. You can play until you lose, or you clear the waves and nothing spawns anymore!
 
 Required libraries: libglew, libsfml (version 2.0, NOT 1.6), freeglut3, libopenal, libopenal-data
 

@@ -1,116 +1,98 @@
 #include "Game.h"
 
-std::string wordWrap(std::string str, unsigned size)
-{
-	unsigned start = 0;
-	while(1)
-	{
-		if(start+size > str.length())
-			break;
-
-		unsigned thispos = str.find_last_of('\n', start+size);
-		if(thispos < size+start)
-			start = thispos;
-		thispos = str.find_last_of(' ', size+start);
-		str.replace(thispos,1,"\n"); // makes last space in a line a newline char
-		start = thispos;
-	}
-
-	return str;
-}
-
 //intitalize window and window options, calls main loop
 void Game::Start(void)
 {
-  if(gameState != Uninitialized)
+    if(gameState != Uninitialized)
     return;
 
-  //set window icon
-  icon.loadFromFile("images/Player.png");
-  //make the window
-  mainWindow.create(sf::VideoMode(1024,768,32),"Ace SPACE Pilot"); //playing field is 576 by 768
-  mainWindow.setView(View);
-  mainWindow.setIcon(40,40,icon.getPixelsPtr());
-  mainWindow.setKeyRepeatEnabled(false);
-  mainWindow.setFramerateLimit(60);
-  mainWindow.setMouseCursorVisible(false);
-  rightBound.setSize(sf::Vector2f(400,768));
-  rightBound.setFillColor(sf::Color::Black);
-  rightBound.setPosition(576,0);
-  leftBound.setSize(sf::Vector2f(400,768));
-  leftBound.setFillColor(sf::Color::Black);
-  leftBound.setPosition(-400,0);
-  bottomBound.setSize(sf::Vector2f(576,400));
-  bottomBound.setFillColor(sf::Color::Black);
-  bottomBound.setPosition(0,768);
-  spawnArea.setSize(sf::Vector2f(676,400));
-  spawnArea.setPosition(-50,-400);
-  spawnArea.setFillColor(sf::Color::Black);
-  wholeArea.setSize(sf::Vector2f(1024,768));
-  wholeArea.setFillColor(sf::Color::Black);
-  mainWindow.setVerticalSyncEnabled(true);
-  gameState = Uninitialized;
+    //set window icon
+    icon.loadFromFile("images/Player.png");
+    //make the window
+    mainWindow.create(sf::VideoMode(1024,768,32),"Ace SPACE Pilot"); //playing field is 576 by 768
+    mainWindow.setView(View);
+    mainWindow.setIcon(40,40,icon.getPixelsPtr());
+    mainWindow.setKeyRepeatEnabled(false);
+    mainWindow.setFramerateLimit(60);
+    mainWindow.setMouseCursorVisible(false);
+    rightBound.setSize(sf::Vector2f(400,768));
+    rightBound.setFillColor(sf::Color::Black);
+    rightBound.setPosition(576,0);
+    leftBound.setSize(sf::Vector2f(400,768));
+    leftBound.setFillColor(sf::Color::Black);
+    leftBound.setPosition(-400,0);
+    bottomBound.setSize(sf::Vector2f(576,400));
+    bottomBound.setFillColor(sf::Color::Black);
+    bottomBound.setPosition(0,768);
+    spawnArea.setSize(sf::Vector2f(676,400));
+    spawnArea.setPosition(-50,-400);
+    spawnArea.setFillColor(sf::Color::Black);
+    wholeArea.setSize(sf::Vector2f(1024,768));
+    wholeArea.setFillColor(sf::Color::Black);
+    mainWindow.setVerticalSyncEnabled(true);
+    gameState = Uninitialized;
 
-  //load our main fonts
-  uni05.loadFromFile("fonts/uni05_53.ttf");
-  datagoth.loadFromFile("fonts/datagoth.otf");
+    //load our main fonts
+    uni05.loadFromFile("fonts/uni05_53.ttf");
+    datagoth.loadFromFile("fonts/datagoth.otf");
 
-  //load projectile textures
-  textures[0].loadFromFile("images/proj.png");
-  textures[1].loadFromFile("images/EnemyProj.png");
-  textures[2].loadFromFile("images/EnemyProjSmall.png");
+    //load projectile textures
+    textures[0].loadFromFile("images/proj.png");
+    textures[1].loadFromFile("images/EnemyProj.png");
+    textures[2].loadFromFile("images/EnemyProjSmall.png");
 
-  //load sounds
-  sf::SoundBuffer projSound;
-  projSound.loadFromFile("sounds/se_plst00.wav");
-  sounds[0].setBuffer(projSound);
-  sounds[0].setVolume(20);
+    //load sounds
+    sf::SoundBuffer projSound;
+    projSound.loadFromFile("sounds/se_plst00.wav");
+    sounds[0].setBuffer(projSound);
+    sounds[0].setVolume(20);
 
-  sf::SoundBuffer okSound;
-  okSound.loadFromFile("sounds/se_ok00.wav");
-  sounds[1].setBuffer(okSound);
-  sounds[1].setVolume(50);
+    sf::SoundBuffer okSound;
+    okSound.loadFromFile("sounds/se_ok00.wav");
+    sounds[1].setBuffer(okSound);
+    sounds[1].setVolume(50);
 
-  sf::SoundBuffer pauseSound;
-  pauseSound.loadFromFile("sounds/se_select00.wav");
-  sounds[2].setBuffer(pauseSound);
+    sf::SoundBuffer pauseSound;
+    pauseSound.loadFromFile("sounds/se_select00.wav");
+    sounds[2].setBuffer(pauseSound);
 
-  sf::SoundBuffer hitSound;
-  hitSound.loadFromFile("sounds/se_damage00.wav");
-  sounds[3].setBuffer(hitSound);
-  sounds[3].setVolume(20);
+    sf::SoundBuffer hitSound;
+    hitSound.loadFromFile("sounds/se_damage00.wav");
+    sounds[3].setBuffer(hitSound);
+    sounds[3].setVolume(20);
 
-  sf::SoundBuffer endSound;
-  endSound.loadFromFile("sounds/se_playerdead.wav");
-  sounds[4].setBuffer(endSound);
+    sf::SoundBuffer endSound;
+    endSound.loadFromFile("sounds/se_playerdead.wav");
+    sounds[4].setBuffer(endSound);
+    sounds[4].setVolume(50);
 
-  sf::SoundBuffer killSound;
-  killSound.loadFromFile("sounds/destroy.ogg");
-  sounds[5].setBuffer(killSound);
+    sf::SoundBuffer killSound;
+    killSound.loadFromFile("sounds/destroy.ogg");
+    sounds[5].setBuffer(killSound);
+    sounds[5].setVolume(50);
 
 	//loads in story
     std::ifstream storyFile("storytime.txt");
     std::string storyString((std::istreambuf_iterator<char>(storyFile)), std::istreambuf_iterator<char>());
     story = wordWrap(storyString,48);
 
-
-  if(mainWindow.setActive(true))
-{
-  while(gameState != Exiting)
-  {
-    GameLoop();
-  }
-}
+    if(mainWindow.setActive(true))
+    {
+        while(gameState != Exiting)
+        {
+            GameLoop();
+        }
+    }
   
-  mainWindow.setActive(false);
-  if(mainWindow.isOpen())
-    mainWindow.close();
+    mainWindow.setActive(false);
+
+    if(mainWindow.isOpen())
+        mainWindow.close();
 }
 
 //show splash screen (BLOCKING)
 bool Game::ShowSplashScreen()
 {
-
     sf::String titleText("Ace SPACE Pilot");
     sf::Text title(titleText, datagoth);
     title.setCharacterSize(50);
@@ -131,10 +113,11 @@ bool Game::ShowSplashScreen()
     text2.setPosition(596, 650);
 
     music[0].openFromFile("sounds/menu_bgm.ogg");
+	music[0].setVolume(60);
     music[0].play();
 
     music[1].openFromFile("sounds/stage_bgm.ogg");
-    music[1].setVolume(60);
+    music[1].setVolume(50);
 
     sf::Event event;
     while(true)
@@ -188,6 +171,26 @@ bool Game::ShowSplashScreen()
         scoreboard.drawScoreboard(mainWindow, player1.sprite);
         mainWindow.display();
     }
+}
+
+//wraps long text to fit textbox
+std::string Game::wordWrap(std::string str, unsigned int size)
+{
+    unsigned start = 0;
+    while(1)
+    {
+        if(start+size > str.length())
+            break;
+
+        unsigned thispos = str.find_last_of('\n', start+size);
+        if(thispos < size+start)
+            start = thispos;
+        thispos = str.find_last_of(' ', size+start);
+        str.replace(thispos,1,"\n"); // makes last space in a line a newline char
+        start = thispos;
+    }
+
+    return str;
 }
 
 //checks for wasd and moves player accordingly
@@ -293,39 +296,92 @@ void Game::CleanUp()
             i++;
     }
 
-    bool newWave = 0;
-    for(i = enemyList.begin(); i != enemyList.end(); i++)
+//    bool newWave = 0;
+//    for(i = enemyList.begin(); i != enemyList.end(); i++)
+//    {
+//        if(!(*i).destroyCheck() )
+//        {
+//            newWave = 0;
+//            break;
+//        }
+//        else
+//            newWave = 1;
+//    }
+
+//    if(newWave && gameState == Playing)
+//    {
+//        Enemy* newEnemy = new Enemy(3, 576/2, -100);
+//        newEnemy->setDestination(576/2, 100);
+//        enemyList.push_front(*newEnemy);
+
+//        Enemy* newEnemy2 = new Enemy(2, 0, -100);
+//        newEnemy2->setDestination(200, 300);
+//        enemyList.push_front(*newEnemy2);
+
+//        Enemy* newEnemy3 = new Enemy(4, 576, -100);
+//        newEnemy3->setDestination(450, 200);
+//        enemyList.push_front(*newEnemy3);
+
+//        Enemy* newEnemy4 = new Enemy(4, 60, -100);
+//        newEnemy4->setDestination(100, 200);
+//        enemyList.push_front(*newEnemy4);
+
+//        Enemy* newEnemy5 = new Enemy(2, 536, -100);
+//        newEnemy5->setDestination(350, 300);
+//        enemyList.push_front(*newEnemy5);
+
+//        Enemy* newEnemy6 = new Enemy(1, 600, 100);
+//        newEnemy6->setDestination(-500, 400);
+//        enemyList.push_front(*newEnemy6);
+
+//        Enemy* newEnemy7 = new Enemy(1, 675, 100);
+//        newEnemy7->setDestination(-500, 400);
+//        enemyList.push_front(*newEnemy7);
+
+//        Enemy* newEnemy8 = new Enemy(1, 750, 100);
+//        newEnemy8->setDestination(-500, 400);
+//        enemyList.push_front(*newEnemy8);
+//    }
+}
+
+void Game::Spawn(unsigned int frameCounter)
+{
+    if(frameCounter == 1)
     {
-        if(!(*i).destroyCheck() )
-        {
-            newWave = 0;
-            break;
-        }
-        else
-            newWave = 1;
-    }
-
-    if(newWave && gameState == Playing)
-    {
-        Enemy* newEnemy = new Enemy(3, 576/2, -100);
-        newEnemy->setDestination(576/2, 100);
-        enemyList.push_front(*newEnemy);
-
-        Enemy* newEnemy2 = new Enemy(2, 0, -100);
-        newEnemy2->setDestination(200, 300);
-        enemyList.push_front(*newEnemy2);
-
-        Enemy* newEnemy3 = new Enemy(4, 576, -100);
-        newEnemy3->setDestination(450, 200);
-        enemyList.push_front(*newEnemy3);
-
-        Enemy* newEnemy4 = new Enemy(4, 60, -100);
-        newEnemy4->setDestination(100, 200);
+        Enemy* newEnemy4 = new Enemy(2, 200, -100);
+        newEnemy4->setDestination(200, 300);
         enemyList.push_front(*newEnemy4);
 
-        Enemy* newEnemy5 = new Enemy(2, 536, -100);
+        Enemy* newEnemy5 = new Enemy(2, 376, -100);
         newEnemy5->setDestination(350, 300);
         enemyList.push_front(*newEnemy5);
+    }
+    else if(frameCounter == 180)
+    {
+        Enemy* newEnemy4 = new Enemy(1, -100, 100);
+        newEnemy4->setDestination(800, 300);
+        enemyList.push_front(*newEnemy4);
+
+        Enemy* newEnemy5 = new Enemy(2, 476, -100);
+        newEnemy5->setDestination(350, 300);
+        enemyList.push_front(*newEnemy5);
+    }
+    else if(frameCounter == 240)
+    {
+        Enemy* newEnemy4 = new Enemy(1, 676, 100);
+        newEnemy4->setDestination(-200, 300);
+        enemyList.push_front(*newEnemy4);
+
+        Enemy* newEnemy5 = new Enemy(2, 100, -100);
+        newEnemy5->setDestination(350, 300);
+        enemyList.push_front(*newEnemy5);
+    }
+    else if(frameCounter == 320)
+    {
+        Enemy* newEnemy2 = new Enemy(4, 576/2, -100);
+        newEnemy2->setDestination(576/2, 400);
+        newEnemy2->setFireDelay(320);
+        enemyList.push_front(*newEnemy2);
 
         Enemy* newEnemy6 = new Enemy(1, 600, 100);
         newEnemy6->setDestination(-500, 400);
@@ -338,6 +394,62 @@ void Game::CleanUp()
         Enemy* newEnemy8 = new Enemy(1, 750, 100);
         newEnemy8->setDestination(-500, 400);
         enemyList.push_front(*newEnemy8);
+    }
+    else if(frameCounter == 440)
+    {
+        Enemy* newEnemy2 = new Enemy(4, 576/4, -100);
+        newEnemy2->setDestination(576/4, 300);
+        newEnemy2->setFireDelay(200);
+        enemyList.push_front(*newEnemy2);
+
+        Enemy* newEnemy6 = new Enemy(4, 576*3/4, -100);
+        newEnemy6->setDestination(576*3/4, 300);
+        newEnemy6->setFireDelay(200);
+        enemyList.push_front(*newEnemy6);
+
+        Enemy* newEnemy7 = new Enemy(4, 526, -100);
+        newEnemy7->setDestination(526, 200);
+        newEnemy7->setFireDelay(200);
+        enemyList.push_front(*newEnemy7);
+
+        Enemy* newEnemy8 = new Enemy(4, 50, -100);
+        newEnemy8->setDestination(50, 200);
+        newEnemy8->setFireDelay(200);
+        enemyList.push_front(*newEnemy8);
+
+        Enemy* newEnemy3 = new Enemy(4, 576/2, -100);
+        newEnemy6->setDestination(576/2, 100);
+        newEnemy6->setFireDelay(200);
+        enemyList.push_front(*newEnemy6);
+
+        Enemy* newEnemy4 = new Enemy(4, 526, -100);
+        newEnemy7->setDestination(526, 100);
+        newEnemy7->setFireDelay(200);
+        enemyList.push_front(*newEnemy7);
+
+        Enemy* newEnemy5 = new Enemy(4, 50, -100);
+        newEnemy8->setDestination(50, 100);
+        newEnemy8->setFireDelay(200);
+        enemyList.push_front(*newEnemy8);
+    }
+    else if(frameCounter == 1000)
+    {
+        Enemy* newEnemy2 = new Enemy(3, (576/4)-50, 800);
+        newEnemy2->setDestination(576/4, 100);
+        newEnemy2->setFireDelay(240);
+        enemyList.push_front(*newEnemy2);
+
+        Enemy* newEnemy6 = new Enemy(3, (576*3/4)+50, 800);
+        newEnemy6->setDestination(576*3/4, 100);
+        newEnemy6->setFireDelay(240);
+        enemyList.push_front(*newEnemy6);
+    }
+    else if(frameCounter == 1100)
+    {
+        Enemy* newEnemy2 = new Enemy(3, 576/2, 800);
+        newEnemy2->setDestination(576/2, 200);
+        newEnemy2->setFireDelay(140);
+        enemyList.push_front(*newEnemy2);
     }
 }
 
@@ -427,6 +539,7 @@ void Game::GameLoop()
             if(currentEvent.type == (sf::Event::KeyPressed) && currentEvent.key.code == (sf::Keyboard::P))
             {
                 sounds[2].play();
+                music[1].pause();
                 gameState = Paused;
             }
             break;
@@ -440,6 +553,7 @@ void Game::GameLoop()
             if(currentEvent.type == (sf::Event::KeyPressed) && currentEvent.key.code == (sf::Keyboard::P))
             {
                 sounds[2].play();
+                music[1].play();
                 gameState = Playing;
             }
             break;
@@ -476,6 +590,7 @@ void Game::GameLoop()
     case Uninitialized:
     {
         mainWindow.clear();
+        frameCounter = 0;
 
         background0.Load("images/acespacebg0.png");
         background1.Load("images/acespacebg1.png");
@@ -491,7 +606,7 @@ void Game::GameLoop()
         scoreboard.updatePower(0);
         scoreboard.updateLives(0);
         scoreboard.updateScore(-1);
-	scoreboard.updateTargetHP(0,0);
+        scoreboard.updateTargetHP(0,0);
 
         scoreboard.updateFont(&datagoth);
         scoreboard.clear();
@@ -518,34 +633,25 @@ void Game::GameLoop()
 
 	    if(storyScreen == 5) 
 	    {
-                music[0].stop();
+        music[0].stop();
 		music[1].play();    
 		gameState = Playing;
 
 		scoreboard.updateLives(1);
 		scoreboard.updatePower(5);
 		scoreboard.updateScore(000000);
-		scoreboard.updateTargetHP(0,0);
-
-		//intial wave to seed the enemy list
-		Enemy* newEnemy2 = new Enemy(2, 0, -100);
-		newEnemy2->setDestination(200, 300);
-		enemyList.push_front(*newEnemy2);
-
-		Enemy* newEnemy3 = new Enemy(2, 576, -100);
-		newEnemy3->setDestination(350, 300);
-		enemyList.push_front(*newEnemy3);
-
-		Enemy* newEnemy4 = new Enemy(2, 60, -100);
-		newEnemy4->setDestination(200, 300);
-		enemyList.push_front(*newEnemy4);
-
-		Enemy* newEnemy5 = new Enemy(2, 536, -100);
-		newEnemy5->setDestination(350, 300);
-		enemyList.push_front(*newEnemy5);
+        scoreboard.updateTargetHP(0,0);
 
 		frameClock.restart();
 	    }
+
+        //update paralaxed backgrounds
+        if(bgMove0 > (2500-768))
+            bgMove0 = 0;
+        bgMove0 += 1;
+        background0.sprite.setTextureRect(sf::Rect<int>(0,(2500-768)-bgMove0,576,768));
+
+        break;
     }
     case Playing:
     {
@@ -565,6 +671,10 @@ void Game::GameLoop()
 
         UpdateProj();
         UpdateEnemies();
+
+        frameCounter++;
+        //spawn new enemies based on framecounter
+        Spawn(frameCounter);
 
         //update paralaxed backgrounds
         if(bgMove0 > (2500-768))
@@ -669,6 +779,7 @@ int Game::storyScreen;
 float Game::bgMove0;
 float Game::bgMove1;
 float Game::bgMove2;
+unsigned int Game::frameCounter = 0;
 sf::Image Game::icon;
 sf::Font Game::uni05;
 sf::Font Game::datagoth;

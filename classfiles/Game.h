@@ -39,6 +39,8 @@ private:
   static void DrawProj();
   static void DrawEnemies();
   static void CleanUp();
+  static void Spawn(unsigned int);
+  static std::string wordWrap(std::string, unsigned int);
 
   enum GameState { Uninitialized, ShowingSplash, Paused, Playing, GameOver, Exiting, Intro };
 
@@ -62,6 +64,7 @@ private:
   static float bgMove0;
   static float bgMove1;
   static float bgMove2;
+  static unsigned int frameCounter;
   static sf::Image icon;
   static sf::Font uni05;
   static sf::Font datagoth;
