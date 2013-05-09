@@ -4,7 +4,7 @@ libs := -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
 all: Game
 
 Game: $(objects)
-	g++ -mwindows -o $@ $^ $(libs)
+	g++ -o $@ $^ $(libs)
 
 %.o: %.cpp
 	g++ -c -MMD -o $@ $<
