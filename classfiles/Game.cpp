@@ -90,7 +90,7 @@ void Game::Start(void)
 	//loads in story
     std::ifstream storyFile("storytime.txt");
     std::string storyString((std::istreambuf_iterator<char>(storyFile)), std::istreambuf_iterator<char>());
-    story = wordWrap(storyString,50);
+    story = wordWrap(storyString,48);
 
 
   if(mainWindow.setActive(true))
@@ -161,7 +161,6 @@ bool Game::ShowSplashScreen()
            {
                music[0].stop();
                sounds[1].play();
-               music[1].play();
                 return 1;
            }
            if((event.type == (sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape)) || event.type == sf::Event::Closed )
@@ -492,6 +491,7 @@ void Game::GameLoop()
         scoreboard.updatePower(0);
         scoreboard.updateLives(0);
         scoreboard.updateScore(-1);
+	scoreboard.updateTargetHP(0,0);
 
         scoreboard.updateFont(&datagoth);
         scoreboard.clear();
@@ -518,7 +518,7 @@ void Game::GameLoop()
 
 	    if(storyScreen == 5) 
 	    {
-		    
+		music[1].play();    
 		gameState = Playing;
 
 		scoreboard.updateLives(1);
@@ -576,7 +576,7 @@ void Game::GameLoop()
 
     if(bgMove1 > (2500-768))
         bgMove1 = 0;
-    bgMove1 += 2;
+    bgMove1 += 3;
     background1.sprite.setTextureRect(sf::Rect<int>(0,(2500-768)-bgMove1,576,768));
 
     //clean up sprites to be deleted
@@ -595,17 +595,8 @@ void Game::GameLoop()
     text.setColor(sf::Color::White);
     text.setPosition(596, 650);
 
-		sf::String sidebar(buffer+"\n\nPress Enter");
-		sf::Text textBox(sidebar,datagoth);
-
-	if(gameState == Intro)
-	{
-
-		textBox.setCharacterSize(20);
-		textBox.setColor(sf::Color::White);
-		textBox.setPosition(596, 300);
-	}
-
+    sf::String sidebar(buffer+"\n\nPress Enter");
+    sf::Text textBox(sidebar,datagoth);
 
     if(gameState == GameOver)
     {
@@ -638,8 +629,13 @@ void Game::GameLoop()
     mainWindow.draw(leftBound);
     mainWindow.draw(bottomBound);
     mainWindow.draw(text);
-    if(gameState == Intro)
-    mainWindow.draw(textBox);
+    if(gameState == Intro && storyScreen < 5)
+    {
+    	textBox.setCharacterSize(20);
+    	textBox.setColor(sf::Color::White);
+    	textBox.setPosition(596, 250);
+	mainWindow.draw(textBox);
+    }
     scoreboard.drawScoreboard(mainWindow, player1.sprite);
 
     //finally, render the frame
