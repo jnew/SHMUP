@@ -92,7 +92,6 @@ void Game::Start(void)
     std::string storyString((std::istreambuf_iterator<char>(storyFile)), std::istreambuf_iterator<char>());
     story = wordWrap(storyString,50);
 
-    buffer = "Press Enter for Story";
 
   if(mainWindow.setActive(true))
 {
@@ -503,14 +502,21 @@ void Game::GameLoop()
             gameState = Exiting;
         else
         {
-           gameState = Intro; 
+           gameState = Intro;
+		unsigned pos = 0;
+		for(int i = 0; i < 10; i++)
+		{
+			pos = story.find_first_of('\n',pos+1);
+		}
+		buffer.assign(story,0,pos);
+		story.erase(0,pos);
 	}
         break;
     }
     case Intro:
     {
 
-	    if(storyScreen == 6) 
+	    if(storyScreen == 5) 
 	    {
 		    
 		gameState = Playing;
@@ -589,7 +595,7 @@ void Game::GameLoop()
     text.setColor(sf::Color::White);
     text.setPosition(596, 650);
 
-		sf::String sidebar(buffer);
+		sf::String sidebar(buffer+"\n\nPress Enter");
 		sf::Text textBox(sidebar,datagoth);
 
 	if(gameState == Intro)
@@ -632,6 +638,7 @@ void Game::GameLoop()
     mainWindow.draw(leftBound);
     mainWindow.draw(bottomBound);
     mainWindow.draw(text);
+    if(gameState == Intro)
     mainWindow.draw(textBox);
     scoreboard.drawScoreboard(mainWindow, player1.sprite);
 
