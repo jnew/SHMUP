@@ -9,9 +9,12 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "Projectile.h"
+
 #include <stdio.h>
 #include <string>
 #include <ctime>
+#include <fstream>
+#include <streambuf>
 #include <iostream>
 #include <list>
 
@@ -37,7 +40,7 @@ private:
   static void DrawEnemies();
   static void CleanUp();
 
-  enum GameState { Uninitialized, ShowingSplash, Paused, Playing, GameOver, Exiting };
+  enum GameState { Uninitialized, ShowingSplash, Paused, Playing, GameOver, Exiting, Intro };
 
   static GameState gameState;
   static sf::RenderWindow mainWindow;
@@ -53,6 +56,9 @@ private:
   static sf::Sound sounds[6];
   static sf::Music music[2];
   static sf::Texture textures[3];
+  static std::string story;
+  static std::string buffer;
+  static int storyScreen;
   static float bgMove0;
   static float bgMove1;
   static float bgMove2;

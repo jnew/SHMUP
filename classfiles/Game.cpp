@@ -1,5 +1,24 @@
 #include "Game.h"
 
+std::string wordWrap(std::string str, unsigned size)
+{
+	unsigned start = 0;
+	while(1)
+	{
+		if(start+size > str.length())
+			break;
+
+		unsigned thispos = str.find_last_of('\n', start+size);
+		if(thispos < size+start)
+			start = thispos;
+		thispos = str.find_last_of(' ', size+start);
+		str.replace(thispos,1,"\n"); // makes last space in a line a newline char
+		start = thispos;
+	}
+
+	return str;
+}
+
 //intitalize window and window options, calls main loop
 void Game::Start(void)
 {
@@ -67,6 +86,12 @@ void Game::Start(void)
   sf::SoundBuffer killSound;
   killSound.loadFromFile("sounds/destroy.ogg");
   sounds[5].setBuffer(killSound);
+
+	//loads in story
+    std::ifstream storyFile("storytime.txt");
+    std::string storyString((std::istreambuf_iterator<char>(storyFile)), std::istreambuf_iterator<char>());
+    story = wordWrap(storyString,50);
+
 
   if(mainWindow.setActive(true))
 {
@@ -346,6 +371,8 @@ void Game::GameLoop()
     float frameTime = frameClock.getElapsedTime().asSeconds();
     frameClock.restart();
 
+
+
     //event loop
     sf::Event currentEvent;
     while(mainWindow.pollEvent(currentEvent))
@@ -418,8 +445,31 @@ void Game::GameLoop()
             }
             break;
         }
+	case Intro:
+	{
+	    if(currentEvent.type == (sf::Event::KeyPressed) && currentEvent.key.code == (sf::Keyboard::Return))
+            {
+		storyScreen++;
+		sounds[1].play();
+		unsigned pos = 0;
+		for(int i = 0; i < 10; i++)
+		{
+			pos = story.find_first_of('\n',pos+1);
+		}
+		buffer.assign(story,0,pos);
+		story.erase(0,pos);
+
+            }
+            if(currentEvent.type == sf::Event::Closed || (currentEvent.type == (sf::Event::KeyPressed) && (currentEvent.key.code == sf::Keyboard::Escape)))
+            {
+                gameState = Exiting;
+            }
+            break;
+
+	}
+
+	}
         }
-    }
 
     //non event-triggered state stuff (every frame updates)
     switch(gameState)
@@ -452,33 +502,49 @@ void Game::GameLoop()
             gameState = Exiting;
         else
         {
-            gameState = Playing;
-
-            scoreboard.updateLives(1);
-            scoreboard.updatePower(5);
-            scoreboard.updateScore(000000);
-            scoreboard.updateTargetHP(0,0);
-
-            //intial wave to seed the enemy list
-            Enemy* newEnemy2 = new Enemy(2, 0, -100);
-            newEnemy2->setDestination(200, 300);
-            enemyList.push_front(*newEnemy2);
-
-            Enemy* newEnemy3 = new Enemy(2, 576, -100);
-            newEnemy3->setDestination(350, 300);
-            enemyList.push_front(*newEnemy3);
-
-            Enemy* newEnemy4 = new Enemy(2, 60, -100);
-            newEnemy4->setDestination(200, 300);
-            enemyList.push_front(*newEnemy4);
-
-            Enemy* newEnemy5 = new Enemy(2, 536, -100);
-            newEnemy5->setDestination(350, 300);
-            enemyList.push_front(*newEnemy5);
-
-            frameClock.restart();
-        }
+           gameState = Intro;
+		unsigned pos = 0;
+		for(int i = 0; i < 10; i++)
+		{
+			pos = story.find_first_of('\n',pos+1);
+		}
+		buffer.assign(story,0,pos);
+		story.erase(0,pos);
+	}
         break;
+    }
+    case Intro:
+    {
+
+	    if(storyScreen == 5) 
+	    {
+		    
+		gameState = Playing;
+
+		scoreboard.updateLives(1);
+		scoreboard.updatePower(5);
+		scoreboard.updateScore(000000);
+		scoreboard.updateTargetHP(0,0);
+
+		//intial wave to seed the enemy list
+		Enemy* newEnemy2 = new Enemy(2, 0, -100);
+		newEnemy2->setDestination(200, 300);
+		enemyList.push_front(*newEnemy2);
+
+		Enemy* newEnemy3 = new Enemy(2, 576, -100);
+		newEnemy3->setDestination(350, 300);
+		enemyList.push_front(*newEnemy3);
+
+		Enemy* newEnemy4 = new Enemy(2, 60, -100);
+		newEnemy4->setDestination(200, 300);
+		enemyList.push_front(*newEnemy4);
+
+		Enemy* newEnemy5 = new Enemy(2, 536, -100);
+		newEnemy5->setDestination(350, 300);
+		enemyList.push_front(*newEnemy5);
+
+		frameClock.restart();
+	    }
     }
     case Playing:
     {
@@ -529,6 +595,18 @@ void Game::GameLoop()
     text.setColor(sf::Color::White);
     text.setPosition(596, 650);
 
+		sf::String sidebar(buffer+"\n\nPress Enter");
+		sf::Text textBox(sidebar,datagoth);
+
+	if(gameState == Intro)
+	{
+
+		textBox.setCharacterSize(20);
+		textBox.setColor(sf::Color::White);
+		textBox.setPosition(596, 300);
+	}
+
+
     if(gameState == GameOver)
     {
         sf::String gameOver("GAME OVER");
@@ -560,6 +638,8 @@ void Game::GameLoop()
     mainWindow.draw(leftBound);
     mainWindow.draw(bottomBound);
     mainWindow.draw(text);
+    if(gameState == Intro)
+    mainWindow.draw(textBox);
     scoreboard.drawScoreboard(mainWindow, player1.sprite);
 
     //finally, render the frame
@@ -586,6 +666,9 @@ sf::View Game::View(sf::FloatRect(0, 0, 1024, 768));
 sf::Sound Game::sounds[6];
 sf::Music Game::music[2];
 sf::Texture Game::textures[3];
+std::string Game::story;
+std::string Game::buffer;
+int Game::storyScreen;
 float Game::bgMove0;
 float Game::bgMove1;
 float Game::bgMove2;
