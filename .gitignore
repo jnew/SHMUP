@@ -20,6 +20,7 @@ Game
 *.pro
 *.pro.*
 *.mp3
+*_old.ogg
 
 *.*~
 *~

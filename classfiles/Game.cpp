@@ -69,6 +69,7 @@ void Game::Start(void)
   sf::SoundBuffer okSound;
   okSound.loadFromFile("sounds/se_ok00.wav");
   sounds[1].setBuffer(okSound);
+  sounds[1].setVolume(50);
 
   sf::SoundBuffer pauseSound;
   pauseSound.loadFromFile("sounds/se_select00.wav");
@@ -133,7 +134,7 @@ bool Game::ShowSplashScreen()
     music[0].play();
 
     music[1].openFromFile("sounds/stage_bgm.ogg");
-    music[1].setVolume(30);
+    music[1].setVolume(60);
 
     sf::Event event;
     while(true)
@@ -159,7 +160,6 @@ bool Game::ShowSplashScreen()
            }
            if((event.type == (sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Return)))
            {
-               music[0].stop();
                sounds[1].play();
                 return 1;
            }
@@ -518,6 +518,7 @@ void Game::GameLoop()
 
 	    if(storyScreen == 5) 
 	    {
+                music[0].stop();
 		music[1].play();    
 		gameState = Playing;
 
