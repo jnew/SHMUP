@@ -608,7 +608,7 @@ void Game::GameLoop()
         endingMessage.setColor(sf::Color::Red);
         endingMessage.setPosition(288-(endingMessage.getGlobalBounds().width/2), 300);
 
-        sf::String authors("Developed by:\nJohn New\nDevon Gardner\nJon Forcht\nDanny Krulick\n\n\n\n\n\n\nPress Enter to Restart");
+        sf::String authors("Developed by:\nJohn New\nDevon Gardner\nJon Forcht\nDanny Krulick\n\nMusic By:\nEdward Blakeley\nAlexander Skeppstedt\n\n\nPress Enter to Restart");
         sf::Text credits(authors, datagoth);
         credits.setCharacterSize(20);
         credits.setColor(sf::Color::White);
