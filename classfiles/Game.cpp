@@ -335,13 +335,22 @@ void Game::CleanUp()
 //        enemyList.push_front(*newEnemy6);
 
 //        Enemy* newEnemy7 = new Enemy(1, 675, 100);
-//        newEnemy7->setDestination(-500, 400);
 //        enemyList.push_front(*newEnemy7);
+//        newEnemy7->500(-setDestination, 400);
 
 //        Enemy* newEnemy8 = new Enemy(1, 750, 100);
 //        newEnemy8->setDestination(-500, 400);
 //        enemyList.push_front(*newEnemy8);
 //    }
+}
+
+void Game::CreateEnemy(unsigned int number, int startX, int startY, int destX, int destY, unsigned int delayFire)
+{
+    Enemy* newEnemy = new Enemy(number, startX, startY);
+    newEnemy->setDestination(destX, destY);
+    if(delayFire != 0)
+        newEnemy->setFireDelay(delayFire);
+    enemyList.push_front(*newEnemy);
 }
 
 void Game::Spawn(unsigned int frameCounter)
@@ -451,6 +460,115 @@ void Game::Spawn(unsigned int frameCounter)
         newEnemy2->setFireDelay(140);
         enemyList.push_front(*newEnemy2);
     }
+    else if(frameCounter == 1450)
+    {
+        Enemy* newEnemy6 = new Enemy(1, 600, 100);
+        newEnemy6->setDestination(-500, 400);
+        enemyList.push_front(*newEnemy6);
+
+        Enemy* newEnemy7 = new Enemy(1, 675, 100);
+        newEnemy7->setDestination(-500, 400);
+        enemyList.push_front(*newEnemy7);
+
+        Enemy* newEnemy8 = new Enemy(1, 750, 100);
+        newEnemy8->setDestination(-500, 400);
+        enemyList.push_front(*newEnemy8);
+    }
+    else if(frameCounter == 1730)
+    {
+        Enemy* newEnemy4 = new Enemy(2, 200, -100);
+        newEnemy4->setDestination(200, 300);
+        enemyList.push_front(*newEnemy4);
+
+        Enemy* newEnemy5 = new Enemy(2, 376, -100);
+        newEnemy5->setDestination(350, 300);
+        enemyList.push_front(*newEnemy5);
+    }
+    
+    else if(frameCounter == 2000)
+    {
+        Enemy* newEnemy8 = new Enemy(4, 50, -100);
+        newEnemy8->setDestination(50, 100);
+        newEnemy8->setFireDelay(240);
+        enemyList.push_front(*newEnemy8);
+        
+        Enemy* newEnemy7 = new Enemy(4, 50, -100);
+        newEnemy7->setDestination(50, 200);
+        newEnemy7->setFireDelay(240);
+        enemyList.push_front(*newEnemy7);
+
+        Enemy* newEnemy4 = new Enemy(4, 526, -100);
+        newEnemy4->setDestination(526, 100);
+        newEnemy4->setFireDelay(240);
+        enemyList.push_front(*newEnemy4);
+
+        Enemy* newEnemy6 = new Enemy(4, 526, -100);
+        newEnemy6->setDestination(526, 200);
+        newEnemy6->setFireDelay(240);
+        enemyList.push_front(*newEnemy6);
+    }
+
+    else if(frameCounter == 2120)
+    {
+        Enemy* newEnemy2 = new Enemy(4, 576/4, -100);
+        newEnemy2->setDestination(576/4, 250);
+        newEnemy2->setFireDelay(120);
+        enemyList.push_front(*newEnemy2);
+
+        Enemy* newEnemy6 = new Enemy(4, 576*3/4, -100);
+        newEnemy6->setDestination(576*3/4, 250);
+        newEnemy6->setFireDelay(120);
+        enemyList.push_front(*newEnemy6);
+    }
+    else if(frameCounter == 2250)
+    {
+        Enemy* newEnemy4 = new Enemy(2, 200, -100);
+        newEnemy4->setDestination(200, 300);
+        enemyList.push_front(*newEnemy4);
+
+        Enemy* newEnemy5 = new Enemy(2, 376, -100);
+        newEnemy5->setDestination(350, 300);
+        enemyList.push_front(*newEnemy5);
+    }
+    else if(frameCounter == 2450)
+    {
+        Enemy* newEnemy8 = new Enemy(1, 750, 100);
+        newEnemy8->setDestination(-500, 400);
+        enemyList.push_front(*newEnemy8);
+    }
+    else if(frameCounter == 2530)
+    {
+        Enemy* newEnemy5 = new Enemy(2, 576/4, -376);
+        newEnemy5->setDestination(350, 300);
+        enemyList.push_front(*newEnemy5);
+    }
+    else if(frameCounter == 2540)
+    {
+        Enemy* newEnemy5 = new Enemy(2, 576/2, -376);
+        newEnemy5->setDestination(350, 300);
+        enemyList.push_front(*newEnemy5);
+    }
+    else if(frameCounter == 2550)
+    {
+        Enemy* newEnemy5 = new Enemy(2, 576*3/4, -376);
+        newEnemy5->setDestination(350, 300);
+        enemyList.push_front(*newEnemy5);
+    }
+    else if(frameCounter == 2700)
+    {
+        Enemy* newEnemy2 = new Enemy(4, 576/2, -100);
+        newEnemy2->setDestination(576/2, 400);
+        newEnemy2->setFireDelay(320);
+        enemyList.push_front(*newEnemy2);
+    }
+    else if(frameCounter == 2840)
+    {
+        Enemy* newEnemy2 = new Enemy(4, 576/2, -100);
+        newEnemy2->setDestination(576/2, 400);
+        newEnemy2->setFireDelay(320);
+        enemyList.push_front(*newEnemy2);
+    }
+
 }
 
 //draw projectiles
@@ -699,7 +817,7 @@ void Game::GameLoop()
     background0.Draw(mainWindow);
 
     char fps[60];
-    sprintf(fps,"%.2f\nESC to Quit\nP to Pause\nSPACE to Fire\nWASD to Move",(float(1)/frameTime));
+    sprintf(fps,"%.2f%5d\nESC to Quit\nP to Pause\nSPACE to Fire\nWASD to Move",(float(1)/frameTime), frameCounter);
     sf::String fpsString(fps);
     sf::Text text(fpsString, datagoth);
     text.setCharacterSize(20);

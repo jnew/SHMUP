@@ -39,6 +39,7 @@ private:
   static void DrawProj();
   static void DrawEnemies();
   static void CleanUp();
+  static void CreateEnemy(unsigned int, int, int, int, int, unsigned int);
   static void Spawn(unsigned int);
   static std::string wordWrap(std::string, unsigned int);
 
