@@ -355,6 +355,7 @@ void Game::CreateEnemy(unsigned int number, int startX, int startY, int destX, i
 
 void Game::Spawn(unsigned int frameCounter)
 {
+if(false);
     if(frameCounter == 1)
     {
         Enemy* newEnemy4 = new Enemy(2, 200, -100);
@@ -557,17 +558,73 @@ void Game::Spawn(unsigned int frameCounter)
     else if(frameCounter == 2700)
     {
         Enemy* newEnemy2 = new Enemy(4, 576/2, -100);
-        newEnemy2->setDestination(576/2, 400);
-        newEnemy2->setFireDelay(320);
+        newEnemy2->setDestination(576/2, 300);
+        newEnemy2->setFireDelay(200);
         enemyList.push_front(*newEnemy2);
+
+        Enemy* newEnemy3 = new Enemy(4, 576/4, -100);
+        newEnemy3->setDestination(576/4, 250);
+        newEnemy3->setFireDelay(200);
+        enemyList.push_front(*newEnemy3);
+
+        Enemy* newEnemy4 = new Enemy(4, 576*3/4, -100);
+        newEnemy4->setDestination(576*3/4, 250);
+        newEnemy4->setFireDelay(200);
+        enemyList.push_front(*newEnemy4);
     }
-    else if(frameCounter == 2840)
+    else if(frameCounter == 2790)
     {
         Enemy* newEnemy2 = new Enemy(4, 576/2, -100);
-        newEnemy2->setDestination(576/2, 400);
-        newEnemy2->setFireDelay(320);
+        newEnemy2->setDestination(576/2, 200);
+        newEnemy2->setFireDelay(110);
+        enemyList.push_front(*newEnemy2);
+
+        Enemy* newEnemy3 = new Enemy(4, 576/6, -100);
+        newEnemy3->setDestination(576/6, 150);
+        newEnemy3->setFireDelay(110);
+        enemyList.push_front(*newEnemy3);
+
+        Enemy* newEnemy4 = new Enemy(4, 576*5/6, -100);
+        newEnemy4->setDestination(576*5/6, 150);
+        newEnemy4->setFireDelay(110);
+        enemyList.push_front(*newEnemy4);
+    }
+    else if(frameCounter == 3000)
+    {
+        Enemy* newEnemy2 = new Enemy(3, 576/2, -100);
+        newEnemy2->setDestination(576/2, 100);
+        newEnemy2->setFireDelay(140);
         enemyList.push_front(*newEnemy2);
     }
+    /*else if(frameCounter == 3300)
+    {
+        Enemy* newEnemy5 = new Enemy(2, 576/2, -376);
+        newEnemy5->setDestination(350, 300);
+        enemyList.push_front(*newEnemy5);
+
+        Enemy* newEnemy6 = new Enemy(2, 576/4, -376);
+        newEnemy6->setDestination(350, 300);
+        enemyList.push_front(*newEnemy6);
+
+        Enemy* newEnemy7 = new Enemy(2, 576*3/4, -376);
+        newEnemy7->setDestination(350, 300);
+        enemyList.push_front(*newEnemy7);
+    }
+    else if(frameCounter == 3440)
+    {
+        Enemy* newEnemy5 = new Enemy(2, 576/2, -376);
+        newEnemy5->setDestination(350, 300);
+        enemyList.push_front(*newEnemy5);
+
+        Enemy* newEnemy6 = new Enemy(2, 576/4, -376);
+        newEnemy6->setDestination(350, 300);
+        enemyList.push_front(*newEnemy6);
+
+        Enemy* newEnemy7 = new Enemy(2, 576*3/4, -376);
+        newEnemy7->setDestination(350, 300);
+        enemyList.push_front(*newEnemy7);
+    }*/
+
 
 }
 
@@ -817,7 +874,7 @@ void Game::GameLoop()
     background0.Draw(mainWindow);
 
     char fps[60];
-    sprintf(fps,"%.2f%5d\nESC to Quit\nP to Pause\nSPACE to Fire\nWASD to Move",(float(1)/frameTime), frameCounter);
+    sprintf(fps,"%.2f\nESC to Quit\nP to Pause\nSPACE to Fire\nWASD to Move",(float(1)/frameTime));
     sf::String fpsString(fps);
     sf::Text text(fpsString, datagoth);
     text.setCharacterSize(20);
