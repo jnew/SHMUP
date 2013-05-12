@@ -297,7 +297,7 @@ bool Enemy::fire()
     }
     else
     {
-        std::cerr << fireDelay << std::endl;
+       //std::cerr << fireDelay << std::endl;
         fireDelay--;
         return false;
     }
