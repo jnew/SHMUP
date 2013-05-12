@@ -270,7 +270,7 @@ void Enemy::setDestination(float x, float y)
 void Enemy::setFireDelay(int delay)
 {
     fireDelay = delay;
-    std::cerr << fireDelay << std::endl;
+    //std::cerr << fireDelay << std::endl;
 }
 
 void Enemy::trackPlayer(Player &target)

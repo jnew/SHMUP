@@ -430,16 +430,6 @@ void Game::Spawn(unsigned int frameCounter)
         newEnemy6->setDestination(576/2, 100);
         newEnemy6->setFireDelay(200);
         enemyList.push_front(*newEnemy6);
-
-        Enemy* newEnemy4 = new Enemy(4, 526, -100);
-        newEnemy7->setDestination(526, 100);
-        newEnemy7->setFireDelay(200);
-        enemyList.push_front(*newEnemy7);
-
-        Enemy* newEnemy5 = new Enemy(4, 50, -100);
-        newEnemy8->setDestination(50, 100);
-        newEnemy8->setFireDelay(200);
-        enemyList.push_front(*newEnemy8);
     }
     else if(frameCounter == 1000)
     {
@@ -460,21 +450,7 @@ void Game::Spawn(unsigned int frameCounter)
         newEnemy2->setFireDelay(140);
         enemyList.push_front(*newEnemy2);
     }
-    else if(frameCounter == 1450)
-    {
-        Enemy* newEnemy6 = new Enemy(1, 600, 100);
-        newEnemy6->setDestination(-500, 400);
-        enemyList.push_front(*newEnemy6);
-
-        Enemy* newEnemy7 = new Enemy(1, 675, 100);
-        newEnemy7->setDestination(-500, 400);
-        enemyList.push_front(*newEnemy7);
-
-        Enemy* newEnemy8 = new Enemy(1, 750, 100);
-        newEnemy8->setDestination(-500, 400);
-        enemyList.push_front(*newEnemy8);
-    }
-    else if(frameCounter == 1730)
+    else if(frameCounter == 1800)
     {
         Enemy* newEnemy4 = new Enemy(2, 200, -100);
         newEnemy4->setDestination(200, 300);
@@ -492,16 +468,6 @@ void Game::Spawn(unsigned int frameCounter)
         newEnemy8->setFireDelay(240);
         enemyList.push_front(*newEnemy8);
         
-        Enemy* newEnemy7 = new Enemy(4, 50, -100);
-        newEnemy7->setDestination(50, 200);
-        newEnemy7->setFireDelay(240);
-        enemyList.push_front(*newEnemy7);
-
-        Enemy* newEnemy4 = new Enemy(4, 526, -100);
-        newEnemy4->setDestination(526, 100);
-        newEnemy4->setFireDelay(240);
-        enemyList.push_front(*newEnemy4);
-
         Enemy* newEnemy6 = new Enemy(4, 526, -100);
         newEnemy6->setDestination(526, 200);
         newEnemy6->setFireDelay(240);
@@ -556,10 +522,6 @@ void Game::Spawn(unsigned int frameCounter)
     }
     else if(frameCounter == 2700)
     {
-        Enemy* newEnemy2 = new Enemy(4, 576/2, -100);
-        newEnemy2->setDestination(576/2, 300);
-        newEnemy2->setFireDelay(200);
-        enemyList.push_front(*newEnemy2);
 
         Enemy* newEnemy3 = new Enemy(4, 576/4, -100);
         newEnemy3->setDestination(576/4, 250);
@@ -573,10 +535,6 @@ void Game::Spawn(unsigned int frameCounter)
     }
     else if(frameCounter == 2790)
     {
-        Enemy* newEnemy2 = new Enemy(4, 576/2, -100);
-        newEnemy2->setDestination(576/2, 200);
-        newEnemy2->setFireDelay(110);
-        enemyList.push_front(*newEnemy2);
 
         Enemy* newEnemy3 = new Enemy(4, 576/6, -100);
         newEnemy3->setDestination(576/6, 150);
@@ -623,8 +581,6 @@ void Game::Spawn(unsigned int frameCounter)
         newEnemy7->setDestination(350, 300);
         enemyList.push_front(*newEnemy7);
     }*/
-
-
 }
 
 //draw projectiles
@@ -897,6 +853,23 @@ void Game::GameLoop()
         credits.setCharacterSize(20);
         credits.setColor(sf::Color::White);
         credits.setPosition(288-(credits.getGlobalBounds().width/2), 500);
+        mainWindow.draw(credits);
+        mainWindow.draw(endingMessage);
+    }
+    if(enemyList.empty() && frameCounter > 3300)
+    {
+        sf::String gameOver("Good Job!");
+        sf::Text endingMessage(gameOver, datagoth);
+        endingMessage.setCharacterSize(50);
+        //endingMessage.setStyle(sf::Text::Bold);
+        endingMessage.setColor(sf::Color::Red);
+        endingMessage.setPosition(288-(endingMessage.getGlobalBounds().width/2), 300);
+
+        sf::String authors("The rest of the game\nis under development!\n\nDeveloped by:\nJohn New\nDevon Gardner\nJon Forcht\nDanny Krulick\n\nMusic By:\nEdward Blakeley\nAlexander Skeppstedt\n\nPress Esc to Exit");
+        sf::Text credits(authors, datagoth);
+        credits.setCharacterSize(20);
+        credits.setColor(sf::Color::White);
+        credits.setPosition(288-(credits.getGlobalBounds().width/2), 400);
         mainWindow.draw(credits);
         mainWindow.draw(endingMessage);
     }
