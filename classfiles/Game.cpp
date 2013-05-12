@@ -355,7 +355,6 @@ void Game::CreateEnemy(unsigned int number, int startX, int startY, int destX, i
 
 void Game::Spawn(unsigned int frameCounter)
 {
-if(false);
     if(frameCounter == 1)
     {
         Enemy* newEnemy4 = new Enemy(2, 200, -100);
