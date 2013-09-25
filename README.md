@@ -1,6 +1,10 @@
 SHMUP
 =====
 
+Windows users: pre-built win32 exe with all libraries is [here]("https://dl.dropboxusercontent.com/u/12437014/AceSPACEPilot_win32.zip"). Please extract contents to a folder and run Game.exe.
+
+Lunix users: See below instructions to compile on your machine.
+
 Title: Ace "SPACE" Pilot
 
 Info: This is basically a tech demo of a shoot-em-up engine we wrote from the ground up in C++ with libsfml. There is not much "gameplay" but we have waves of enemies that will spawn to demo player tracking, bullet patterns, enemy movement, enemy health/health bars, our scrolling backgrounds, and scorekeeping. You can play until you lose, or you clear the waves and nothing spawns anymore!
