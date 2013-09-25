@@ -1,7 +1,7 @@
 SHMUP
 =====
 
-Windows users: pre-built win32 exe with all libraries is [here]("https://dl.dropboxusercontent.com/u/12437014/AceSPACEPilot_win32.zip"). Please extract contents to a folder and run Game.exe.
+Windows users: pre-built win32 exe with all libraries is [here](https://dl.dropboxusercontent.com/u/12437014/AceSPACEPilot_win32.zip). Please extract contents to a folder and run Game.exe.
 
 Lunix users: See below instructions to compile on your machine.
 
